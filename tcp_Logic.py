@@ -107,8 +107,6 @@ class TcpLogic(Tcp_ucpUi):
                     （总结成一句话，写成Expection会导致点两次 “断开” 才能关闭服务器）
                 """
                 print('Error:',con_rest)
-                discon_msg = '\nRemote Client %s Port:%s disconnected\n' % addr
-                self.signal_write_msg.emit(discon_msg)
                 conn.close()
                 print(self.client_socket_list)
                 # 将当前客户端的连接从socket列表中删除

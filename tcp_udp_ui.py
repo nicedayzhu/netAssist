@@ -9,6 +9,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
 from netAssitui import Ui_NetAssist
 from time import ctime
+
 class Tcp_ucpUi(Ui_NetAssist):
     # 主线程属性继承自Ui_NetAssist
     # 信号槽机制：设置一个信号，用于触发接收区写入动作
@@ -35,6 +36,21 @@ class Tcp_ucpUi(Ui_NetAssist):
         self.signal_status_connected.connect(self.statusbar_connect)
         self.signal_status_removed.connect(self.statusbar_remove)
 
+    def hex_str_convert(self,msg):
+        """
+        字符串和16进制相互转换
+        1.字符串转16进制显示（finished）
+        To do:
+            16进制发送
+        :param msg:
+        :return:
+        """
+        if self.hex_recv.isChecked():
+            hex_msg = self.str_to_hex(msg)
+        else:
+            hex_msg = msg
+        return hex_msg
+
     def write_msg(self, msg):
         # signal_write_msg信号会触发这个函数
         """
@@ -46,34 +62,24 @@ class Tcp_ucpUi(Ui_NetAssist):
         # 为接收到的数据加上时间戳并且显示在接收框中
         if self.timestamp.isChecked():
             if self.newline.isChecked():
-                if self.hex_recv.isChecked():
-                    hex_msg = self.str_to_hex(msg)
-                    self.DataRecvtext.insertPlainText('\n[%s]' % ctime())
-                    self.DataRecvtext.insertPlainText('%s' % hex_msg)
-                else:
-                    self.DataRecvtext.insertPlainText('\n[%s]' % ctime())
-                    self.DataRecvtext.insertPlainText('%s' % msg)
+                self.DataRecvtext.insertPlainText('\n[%s]' % ctime())
+                # 将传入的msg进行字符串转16进制功能判断，显示处理
+                processed_msg = self.hex_str_convert(msg)
+                self.DataRecvtext.insertPlainText('%s' % processed_msg)
             else:
-                if self.hex_recv.isChecked():
-                    hex_msg = self.str_to_hex(msg)
-                    self.DataRecvtext.insertPlainText('[%s]' % ctime())
-                    self.DataRecvtext.insertPlainText('%s' % hex_msg)
-                else:
-                    self.DataRecvtext.insertPlainText('[%s]' % ctime())
-                    self.DataRecvtext.insertPlainText('%s' % msg)
+                self.DataRecvtext.insertPlainText('[%s]' % ctime())
+                # 将传入的msg进行字符串转16进制功能判断，显示处理
+                processed_msg = self.hex_str_convert(msg)
+                self.DataRecvtext.insertPlainText('%s' % processed_msg)
         else:
             if self.newline.isChecked():
-                if self.hex_recv.isChecked():
-                    hex_msg = self.str_to_hex(msg)
-                    self.DataRecvtext.insertPlainText('\n%s' % hex_msg)
-                else:
-                    self.DataRecvtext.insertPlainText('\n%s' % msg)
+                # 将传入的msg进行字符串转16进制功能判断，显示处理
+                processed_msg = self.hex_str_convert(msg)
+                self.DataRecvtext.insertPlainText('\n%s' % processed_msg)
             else:
-                if self.hex_recv.isChecked():
-                    hex_msg = self.str_to_hex(msg)
-                    self.DataRecvtext.insertPlainText('%s' % hex_msg)
-                else:
-                    self.DataRecvtext.insertPlainText('%s' % msg)
+                # 将传入的msg进行字符串转16进制功能判断，并显示处理
+                processed_msg = self.hex_str_convert(msg)
+                self.DataRecvtext.insertPlainText('%s' % processed_msg)
         # 滚动条移动到结尾
         self.DataRecvtext.moveCursor(QtGui.QTextCursor.End)
 
