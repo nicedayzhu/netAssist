@@ -72,13 +72,33 @@ class Tcp_ucpUi(Ui_NetAssist):
         self.statusbar.showMessage('客户端：%s 断开连接！' % statusbar_client_info, msecs=2000)
 
     def str_to_hex(self,s):
+        """
+        字符串转16进制显示
+        :param s:
+        :return:
+        """
         return ' '.join([hex(ord(c)).replace('0x', '') for c in s])
 
     def hex_to_str(self,s):
+        """
+        16进制转字符串显示
+        :param s:
+        :return:
+        """
         return ''.join([chr(i) for i in [int(b, 16) for b in s.split(' ')]])
 
     def str_to_bin(self,s):
+        """
+        字符串转二进制显示
+        :param s:
+        :return:
+        """
         return ' '.join([bin(ord(c)).replace('0b', '') for c in s])
 
     def bin_to_str(self,s):
+        """
+        二进制转字符串显示
+        :param s:
+        :return:
+        """
         return ''.join([chr(i) for i in [int(b, 2) for b in s.split(' ')]])
