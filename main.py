@@ -40,6 +40,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.recv2file.toggled.connect(self.rfilechoose)
         # 按下保存数据按钮，进行保存操作
         self.save_btn.clicked.connect(self.datasave2file)
+        # 载入需要发送的文件
+        self.file_load.toggled.connect(self.send_fileload)
+        # 文件发送按钮
+        self.file_send_btn.clicked.connect(self.file_send_select)
 
     def init_statusbar(self):
 
@@ -112,6 +116,14 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
             self.data_send_t_c()
         if self.prot_box.currentIndex() == 2 or self.prot_box.currentIndex() == 3:
             self.data_send_u()
+
+    def file_send_select(self):
+        if self.prot_box.currentIndex() == 0:
+            self.file_send_t()
+        if self.prot_box.currentIndex() == 1:
+            self.file_send_t_c()
+        if self.prot_box.currentIndex() == 2 or self.prot_box.currentIndex() == 3:
+            self.file_send_u()
 
     def proto_imf(self):
         # 协议类型选择

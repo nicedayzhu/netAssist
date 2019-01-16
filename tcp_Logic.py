@@ -310,3 +310,65 @@ class TcpLogic(Tcp_ucpUi):
                 self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
             else:
                 QMessageBox.critical(self, '警告', '当前无任何连接')
+
+    def file_send_t(self):
+        """
+        功能函数，用于TCP服务端和TCP客户端发送消息
+        :return: None
+        """
+
+        if self.working is False :
+            QMessageBox.critical(self, '警告', '请先设置TCP网络')
+        else:
+            if self.link :
+                if self.file_load.isChecked():
+                    send_msg = self.f_data
+                else:
+                    send_msg = b''
+                print(send_msg,len(send_msg))
+                # 判断发送是否为空
+                if send_msg != b'':
+                    try:
+                        # 发送为All connections，表示服务器向所有连入的客户端发送消息
+                        if self.clients_list.currentIndex() == 0:
+                            for client, address in self.client_socket_list:
+                                client.sendall(send_msg)
+                        else:
+                            # 服务器向选中的特定客户端发送消息
+                            for client, address in self.client_socket_list:
+                                address_info = '%s:%d' % (address[0], address[1])
+                                if self.clients_list.currentText() == address_info:
+                                    client.sendall(send_msg)
+                        self.tx_count += len(send_msg)
+                        self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
+                    except Exception as e_crst:
+                        # QMessageBox.critical(self, '错误', '当前没有任何连接')
+                        pass
+                else:
+                    QMessageBox.critical(self, '警告', '发送不可为空')
+
+            else:
+                QMessageBox.critical(self, '警告', '当前无任何连接')
+
+    def file_send_t_c(self):
+        """
+        功能函数，用于TCP客户端和TCP服务器发送消息
+        :return: None
+        """
+        if self.working is False :
+            QMessageBox.critical(self, '警告', '请先设置TCP网络')
+        else:
+            if self.link :
+                if self.file_load.isChecked():
+                    send_msg = self.f_data
+                else:
+                    send_msg = b''
+                print(send_msg,len(send_msg))
+                if send_msg != b'':
+                    self.s.send(send_msg)
+                else:
+                    QMessageBox.critical(self, '警告', '发送不可为空')
+                self.tx_count += len(send_msg)
+                self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
+            else:
+                QMessageBox.critical(self, '警告', '当前无任何连接')

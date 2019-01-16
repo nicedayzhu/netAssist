@@ -179,9 +179,9 @@
         </property>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
-          <widget class="QCheckBox" name="Sendfile">
+          <widget class="QCheckBox" name="file_load">
            <property name="text">
-            <string>发送文件</string>
+            <string>载入文件</string>
            </property>
           </widget>
          </item>
@@ -214,9 +214,9 @@
           </widget>
          </item>
          <item row="5" column="0">
-          <widget class="QPushButton" name="load_btn">
+          <widget class="QPushButton" name="file_send_btn">
            <property name="text">
-            <string>文件载入</string>
+            <string>发送文件</string>
            </property>
           </widget>
          </item>

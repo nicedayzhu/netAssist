@@ -9,6 +9,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
 from netAssitui import Ui_NetAssist
 from time import ctime
+from PyQt5.QtWidgets import QFileDialog
 
 class Tcp_ucpUi(Ui_NetAssist):
     # 主线程属性继承自Ui_NetAssist
@@ -50,6 +51,19 @@ class Tcp_ucpUi(Ui_NetAssist):
         else:
             hex_msg = msg
         return hex_msg
+
+    def send_fileload(self):
+        if self.file_load.isChecked():
+            # 载入发送文件
+            send_file_name, sf_ok = QFileDialog.getOpenFileName(
+                    self, u'保存文件', './', u'所有文件(*.*)')
+            if sf_ok:
+                self.statusbar.showMessage('文件载入成功', msecs=2000)
+                with open(send_file_name,'rb') as send_f:
+                    self.f_data = send_f.read()
+                print(self.f_data)
+            else:
+                self.statusbar.showMessage('文件载入失败', msecs=2000)
 
     def write_msg(self, msg):
         # signal_write_msg信号会触发这个函数
