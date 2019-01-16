@@ -37,6 +37,7 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.clr_btn.clicked.connect(self.recv_dataclear)
         # 当标记状态改变时触发信号，recv2file的isChecked状态作为状态改变的参考
         self.recv2file.toggled.connect(self.rfilechoose)
+        # 按下保存数据按钮，进行保存操作
         self.save_btn.clicked.connect(self.datasave2file)
 
     def init_statusbar(self):

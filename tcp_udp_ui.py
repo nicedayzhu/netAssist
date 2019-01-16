@@ -34,6 +34,7 @@ class Tcp_ucpUi(Ui_NetAssist):
         self.signal_write_msg.connect(self.write_msg)
         self.signal_status_connected.connect(self.statusbar_connect)
         self.signal_status_removed.connect(self.statusbar_remove)
+
     def write_msg(self, msg):
         # signal_write_msg信号会触发这个函数
         """
@@ -45,16 +46,34 @@ class Tcp_ucpUi(Ui_NetAssist):
         # 为接收到的数据加上时间戳并且显示在接收框中
         if self.timestamp.isChecked():
             if self.newline.isChecked():
-                self.DataRecvtext.insertPlainText('\n[%s]' % ctime())
-                self.DataRecvtext.insertPlainText('%s' % msg)
+                if self.hex_recv.isChecked():
+                    hex_msg = self.str_to_hex(msg)
+                    self.DataRecvtext.insertPlainText('\n[%s]' % ctime())
+                    self.DataRecvtext.insertPlainText('%s' % hex_msg)
+                else:
+                    self.DataRecvtext.insertPlainText('\n[%s]' % ctime())
+                    self.DataRecvtext.insertPlainText('%s' % msg)
             else:
-                self.DataRecvtext.insertPlainText('[%s]' % ctime())
-                self.DataRecvtext.insertPlainText('%s' % msg)
+                if self.hex_recv.isChecked():
+                    hex_msg = self.str_to_hex(msg)
+                    self.DataRecvtext.insertPlainText('[%s]' % ctime())
+                    self.DataRecvtext.insertPlainText('%s' % hex_msg)
+                else:
+                    self.DataRecvtext.insertPlainText('[%s]' % ctime())
+                    self.DataRecvtext.insertPlainText('%s' % msg)
         else:
             if self.newline.isChecked():
-                self.DataRecvtext.insertPlainText('\n%s' % msg)
+                if self.hex_recv.isChecked():
+                    hex_msg = self.str_to_hex(msg)
+                    self.DataRecvtext.insertPlainText('\n%s' % hex_msg)
+                else:
+                    self.DataRecvtext.insertPlainText('\n%s' % msg)
             else:
-                self.DataRecvtext.insertPlainText('%s' % msg)
+                if self.hex_recv.isChecked():
+                    hex_msg = self.str_to_hex(msg)
+                    self.DataRecvtext.insertPlainText('%s' % hex_msg)
+                else:
+                    self.DataRecvtext.insertPlainText('%s' % msg)
         # 滚动条移动到结尾
         self.DataRecvtext.moveCursor(QtGui.QTextCursor.End)
 

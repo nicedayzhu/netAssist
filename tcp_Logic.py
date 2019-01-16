@@ -135,10 +135,7 @@ class TcpLogic(Tcp_ucpUi):
                 if recv_msg:
                     # 消息解码
                     msg = recv_msg.decode('utf-8')
-                    # 字符串转16进制
-                    hex_msg = ' '.join([hex(ord(c)).replace('0x', '') for c in msg])
                     print(msg, type(msg),len(msg)) # msg为 str 类型
-                    print(hex_msg)
                     if show_client_info is True:
                         # 将接收到的消息发送到接收框中进行显示，附带客户端信息
                         self.signal_write_msg.emit('[Remote IP %s Port: %s ]\n' % addr + msg)
