@@ -58,12 +58,12 @@ class Tcp_ucpUi(Ui_NetAssist):
             send_file_name, sf_ok = QFileDialog.getOpenFileName(
                     self, u'保存文件', './', u'所有文件(*.*)')
             if sf_ok:
-                self.statusbar.showMessage('文件载入成功', msecs=2000)
+                self.statusbar.showMessage('文件载入成功', msecs=3000)
                 with open(send_file_name,'rb') as send_f:
                     self.f_data = send_f.read()
                 print(self.f_data)
             else:
-                self.statusbar.showMessage('文件载入失败', msecs=2000)
+                self.statusbar.showMessage('文件载入失败', msecs=3000)
 
     def write_msg(self, msg):
         # signal_write_msg信号会触发这个函数
