@@ -60,9 +60,12 @@ class UdpLogic(Tcp_ucpUi):
             recv_msg, self.raddr = self.us.recvfrom(self.BUFSIZE)
             # 将连接到本服务器的客户端信息显示在客户端列表下拉框中
             statusbar_client_info = '%s:%d' % (self.raddr[0], self.raddr[1])
-            self.clients_list.addItem(statusbar_client_info)
-            # 状态栏显示客户端连接成功信息
-            self.signal_status_connected.emit(statusbar_client_info)
+            if show_client_info is True:
+                self.clients_list.addItem(statusbar_client_info)
+                # 状态栏显示客户端连接成功信息
+                self.signal_status_connected.emit(statusbar_client_info)
+                show_client_info = False
+
             msg = recv_msg.decode('utf-8')
             print(self.raddr,type(self.raddr))
             print(msg, type(msg))  # msg为 str 类型
@@ -72,6 +75,9 @@ class UdpLogic(Tcp_ucpUi):
                 show_client_info = False
             else:
                 self.signal_write_msg.emit(msg)
+            # 将接收到的数据字节数显示在状态栏的计数区域
+            self.rx_count += len(recv_msg)
+            self.statusbar_dict['rx'].setText('接收计数：%s' % self.rx_count)
 
     def socket_open_udpc(self):
         """
@@ -99,6 +105,7 @@ class UdpLogic(Tcp_ucpUi):
         创建新线程以供UDPClient持续监听Server的消息
         :return:
         """
+        show_client_info = True
         while True:
             try:
                 recv_msg, self.addr = self.us.recvfrom(self.BUFSIZE)
@@ -108,8 +115,15 @@ class UdpLogic(Tcp_ucpUi):
                 msg = recv_msg.decode('utf-8')
                 print(self.addr)
                 print(msg, type(msg))  # msg为 str 类型
-                # 将接收到的消息发送到接收框中进行显示
-                self.signal_write_msg.emit(str(self.addr) + '\n' + msg)
+                if show_client_info is True:
+                    # 将接收到的消息发送到接收框中进行显示
+                    self.signal_write_msg.emit('[Remote IP %s Port: %s ]\n' % self.addr + msg)
+                    show_client_info = False
+                else:
+                    self.signal_write_msg.emit(msg)
+                # 将接收到的数据字节数显示在状态栏的计数区域
+                self.rx_count += len(recv_msg)
+                self.statusbar_dict['rx'].setText('接收计数：%s' % self.rx_count)
 
     def socket_close_u(self):
         self.clients_list.clear()
@@ -171,6 +185,8 @@ class UdpLogic(Tcp_ucpUi):
                         self.us.sendto(send_msg, self.remote_ip_port)
                     else:
                         QMessageBox.critical(self, '警告', '发送不可为空')
+                self.tx_count += len(send_msg)
+                self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
 
             else:
                 QMessageBox.critical(self, '警告', '当前无任何连接')
