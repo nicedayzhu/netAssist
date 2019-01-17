@@ -20,7 +20,6 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         super(PyQt5_Netassist, self).__init__()
         self.setupUi(self)
         self.working = False
-        self.newline.setChecked(1)
         self.init()
         self.custom_connect()
         self.init_statusbar()
