@@ -57,13 +57,13 @@ class UdpLogic(Tcp_ucpUi):
         """
         show_client_info = True
         while True:
-            recv_msg, addr = self.us.recvfrom(self.BUFSIZE)
+            recv_msg, self.addr = self.us.recvfrom(self.BUFSIZE)
             msg = recv_msg.decode('utf-8')
-            print(addr,type(addr))
+            print(self.addr,type(self.addr))
             print(msg, type(msg))  # msg为 str 类型
             if show_client_info is True:
             # 将接收到的消息发送到接收框中进行显示
-                self.signal_write_msg.emit('[Remote IP %s Port: %s ]\n' % addr + msg)
+                self.signal_write_msg.emit('[Remote IP %s Port: %s ]\n' % self.addr + msg)
                 show_client_info = False
             else:
                 self.signal_write_msg.emit(msg)
@@ -158,6 +158,40 @@ class UdpLogic(Tcp_ucpUi):
                         #     print("Error:",e_crst)
                     else:
                         QMessageBox.critical(self, '警告', '发送不可为空')
+                if self.prot_box.currentIndex() == 3:
+                    if send_msg != b'':
+                        self.us.sendto(send_msg, self.remote_ip_port)
+                    else:
+                        QMessageBox.critical(self, '警告', '发送不可为空')
+
+            else:
+                QMessageBox.critical(self, '警告', '当前无任何连接')
+
+    def file_send_u(self):
+        """
+        用于UDP发送消息
+        :return:
+        """
+        if self.working is False :
+            QMessageBox.critical(self, '警告', '请先设置UDP网络')
+        else:
+            if self.link :
+                if self.file_load.isChecked():
+                    send_msg = self.f_data
+                else:
+                    send_msg = b''
+                # print(send_msg)
+                # 若当前状态为udp server模式
+                if self.prot_box.currentIndex() == 2:
+                    # 判断发送是否为空
+                    if send_msg != b'':
+                        # try:
+                        self.us.sendto(send_msg, self.addr)
+                        # except Exception as e_crst:
+                        #     print("Error:",e_crst)
+                    else:
+                        QMessageBox.critical(self, '警告', '发送不可为空')
+                # 若当前状态为udp client状态
                 if self.prot_box.currentIndex() == 3:
                     if send_msg != b'':
                         self.us.sendto(send_msg, self.remote_ip_port)
