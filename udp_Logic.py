@@ -36,13 +36,19 @@ class UdpLogic(Tcp_ucpUi):
         self.BUFSIZE = 1024
 
         self.us = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.us.bind(ip_port)  # 绑定地址
-        print('UDPServer listening...')
-
-        self.us_th = threading.Thread(target=self.udp_server_concurrency)
-        self.us_th.setDaemon(True)
-        self.us_th.start()
-        self.link = True
+        try:
+            self.us.bind(ip_port)  # 绑定地址
+        except Exception as ret:
+            print('Error:',ret)
+            QMessageBox.critical(self,'错误','端口已被占用')
+            # 关闭udp socket
+            self.socket_close_u()
+        else:
+            print('UDPServer listening...')
+            self.us_th = threading.Thread(target=self.udp_server_concurrency)
+            self.us_th.setDaemon(True)
+            self.us_th.start()
+            self.link = True
 
     def udp_server_concurrency(self):
         """

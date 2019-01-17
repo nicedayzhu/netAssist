@@ -36,6 +36,8 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.send_Btn.clicked.connect(self.data_send_select)
         # 清空接收区显示
         self.clr_btn.clicked.connect(self.recv_dataclear)
+        # 清空发送区显示
+        self.clr_btn2.clicked.connect(self.send_dataclear)
         # 当标记状态改变时触发信号，recv2file的isChecked状态作为状态改变的参考
         self.recv2file.toggled.connect(self.rfilechoose)
         # 按下保存数据按钮，进行保存操作
@@ -148,6 +150,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         """
         # 清空接收区屏幕
         self.DataRecvtext.clear()
+
+    def send_dataclear(self):
+        # 清空发送区框内容
+        self.DataSendtext.clear()
 
     def rfilechoose(self):
         if self.recv2file.isChecked():
