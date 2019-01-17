@@ -10,13 +10,13 @@ from PyQt5.QtCore import pyqtSignal
 from netAssitui import Ui_NetAssist
 from time import ctime
 from PyQt5.QtWidgets import QFileDialog
-
 class Tcp_ucpUi(Ui_NetAssist):
     # 主线程属性继承自Ui_NetAssist
     # 信号槽机制：设置一个信号，用于触发接收区写入动作
     signal_write_msg = pyqtSignal(str)
     signal_status_connected = pyqtSignal(str)
     signal_status_removed = pyqtSignal(str)
+    signal_add_clientstatus_info = pyqtSignal(str)
 
     # statusbar上添加的控件
     # 使用字典方式进行管理
@@ -36,6 +36,7 @@ class Tcp_ucpUi(Ui_NetAssist):
         self.signal_write_msg.connect(self.write_msg)
         self.signal_status_connected.connect(self.statusbar_connect)
         self.signal_status_removed.connect(self.statusbar_remove)
+        self.signal_add_clientstatus_info.connect(self.add_clientstatus_plain)
 
     def hex_str_convert(self,msg):
         """
@@ -64,6 +65,9 @@ class Tcp_ucpUi(Ui_NetAssist):
                 print(self.f_data)
             else:
                 self.statusbar.showMessage('文件载入失败', msecs=3000)
+
+    def add_clientstatus_plain(self,info):
+        self.DataRecvtext.insertPlainText(info)
 
     def write_msg(self, msg):
         # signal_write_msg信号会触发这个函数
