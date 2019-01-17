@@ -57,13 +57,18 @@ class UdpLogic(Tcp_ucpUi):
         """
         show_client_info = True
         while True:
-            recv_msg, self.addr = self.us.recvfrom(self.BUFSIZE)
+            recv_msg, self.raddr = self.us.recvfrom(self.BUFSIZE)
+            # 将连接到本服务器的客户端信息显示在客户端列表下拉框中
+            statusbar_client_info = '%s:%d' % (self.raddr[0], self.raddr[1])
+            self.clients_list.addItem(statusbar_client_info)
+            # 状态栏显示客户端连接成功信息
+            self.signal_status_connected.emit(statusbar_client_info)
             msg = recv_msg.decode('utf-8')
-            print(self.addr,type(self.addr))
+            print(self.raddr,type(self.raddr))
             print(msg, type(msg))  # msg为 str 类型
             if show_client_info is True:
             # 将接收到的消息发送到接收框中进行显示
-                self.signal_write_msg.emit('[Remote IP %s Port: %s ]\n' % self.addr + msg)
+                self.signal_write_msg.emit('[Remote IP %s Port: %s ]\n' % self.raddr + msg)
                 show_client_info = False
             else:
                 self.signal_write_msg.emit(msg)
@@ -107,6 +112,7 @@ class UdpLogic(Tcp_ucpUi):
                 self.signal_write_msg.emit(str(self.addr) + '\n' + msg)
 
     def socket_close_u(self):
+        self.clients_list.clear()
         if self.prot_box.currentIndex() == 2:
             try:
                 self.us.close()
@@ -149,15 +155,17 @@ class UdpLogic(Tcp_ucpUi):
             if self.link :
                 send_msg = (str(self.DataSendtext.toPlainText())).encode('utf-8')
                 # print(send_msg)
+                # udpserver模式
                 if self.prot_box.currentIndex() == 2:
                     # 判断发送是否为空
                     if send_msg != b'':
                         # try:
-                        self.us.sendto(send_msg, self.addr)
+                        self.us.sendto(send_msg, self.raddr)
                         # except Exception as e_crst:
                         #     print("Error:",e_crst)
                     else:
                         QMessageBox.critical(self, '警告', '发送不可为空')
+                # udpclient模式
                 if self.prot_box.currentIndex() == 3:
                     if send_msg != b'':
                         self.us.sendto(send_msg, self.remote_ip_port)
@@ -186,7 +194,7 @@ class UdpLogic(Tcp_ucpUi):
                     # 判断发送是否为空
                     if send_msg != b'':
                         # try:
-                        self.us.sendto(send_msg, self.addr)
+                        self.us.sendto(send_msg, self.raddr)
                         # except Exception as e_crst:
                         #     print("Error:",e_crst)
                     else:
