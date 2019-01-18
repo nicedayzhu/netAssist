@@ -11,6 +11,7 @@ import socket
 import threading
 import stopThreading
 from time import ctime
+import binascii
 import time
 class TcpLogic(Tcp_ucpUi):
     def __init__(self):
@@ -82,13 +83,6 @@ class TcpLogic(Tcp_ucpUi):
         使用子线程用于创建连接，使每个tcp client可以单独地与server通信
         :return:None
         """
-        # conn.sendall('Welcome to this TCP server, the Server''s function is to add timestamps\n'
-        #              .encode('utf8'))  # 发送欢迎信息
-
-        # conn_msg = '[Remote IP %s Port:%s] Connected\n' % addr
-        # 在接收框中显示客户端连接信息
-        # self.signal_write_msg.emit(conn_msg)
-
         # 这里的show_client_info标志位的作用：仅在收到客户端发送的第一次消息前面加上客户端的ip，port信息
         show_client_info = True
         # 将连接到本服务器的客户端信息显示在客户端列表下拉框中
@@ -131,36 +125,53 @@ class TcpLogic(Tcp_ucpUi):
             else:
                 print(recv_msg)
                 if recv_msg:
-                    # 消息解码
-                    msg = recv_msg.decode('utf-8')
-                    print(msg, type(msg),len(msg)) # msg为 str 类型
-                    if show_client_info is True:
-                        # 将接收到的消息发送到接收框中进行显示，附带客户端信息
-                        self.signal_write_msg.emit('[Remote IP %s Port: %s ]\n' % addr + msg)
-                        # 仅在收到客户端发送的第一次消息前面加上客户端的ip，port信息
-                        show_client_info = False
+                    # 16进制功能检测
+                    if self.hex_recv.isChecked():
+                        msg = binascii.b2a_hex(recv_msg).decode('utf-8')
+                        # 例子：str(binascii.b2a_hex(b'\x01\x0212'))[2:-1] == > 01023132
+                        print(msg, type(msg),len(msg)) # msg为 str 类型
+                        msg = self.hex_show(msg)
+                        if show_client_info is True:
+                            # 将接收到的消息发送到接收框中进行显示，附带客户端信息
+                            connect_info = '[Remote IP %s Port: %s ]' % addr
+                            self.signal_add_clientstatus_info.emit(connect_info)
+                            self.signal_write_msg.emit(msg)
+                            # 仅在收到客户端发送的第一次消息前面加上客户端的ip，port信息
+                            show_client_info = False
+                        else:
+                            self.signal_write_msg.emit(msg)
                     else:
-                        # 将接收到的消息发送到接收框中进行显示
-                        self.signal_write_msg.emit(msg)
+                        try:
+                            # 尝试对接收到的数据解码
+                            msg = recv_msg.decode('utf-8')
+                            print(msg)
+                            msg = self.hex_show(msg)
+                            if show_client_info is True:
+                                # 将接收到的消息发送到接收框中进行显示，附带客户端信息
+                                connect_info = '[Remote IP %s Port: %s ]' % addr
+                                self.signal_add_clientstatus_info.emit(connect_info)
+                                self.signal_write_msg.emit(msg)
+                                # 仅在收到客户端发送的第一次消息前面加上客户端的ip，port信息
+                                show_client_info = False
+                            else:
+                                self.signal_write_msg.emit(msg)
+                        except Exception as ret:
+                            # 如果出现解码错误，提示用户选中16进制显示
+                            self.signal_messagebox_info.emit('解码错误，请尝试16进制显示')
 
                     # 将接收到的数据字节数显示在状态栏的计数区域
                     self.rx_count += len(recv_msg)
                     self.statusbar_dict['rx'].setText('接收计数：%s' % self.rx_count)
 
-                    # with open("test.txt", 'a', encoding='utf-8') as f_obj:
-                    #     f_obj.write(msg + '\n')
-                    # conn.send(msg.upper())#服务端发送消息,将接收的字符串改为全大写
-
-                    # 这里的括号很多，要注意整体性，发送的内容必须是.encode()
-                    # 本行代码的功能：为接收的字符串加上时间戳，同时大写
-                    # conn.sendall(('[%s] %s' % (ctime(), msg.upper())).encode())
                 else:
                     # 当前客户端连接主动关闭，但服务器socket并不关闭
-                    discon_msg = 'Remote Client disconnected'
-                    self.signal_write_msg.emit(discon_msg)
                     conn.close()
                     # 将当前客户端的连接从列表中删除
                     self.client_socket_list.remove((conn,addr))
+                    # 将已断开连接的客户端信息从客户端列表下拉box中删除
+                    self.comboBox_removeItem_byName(self.clients_list, statusbar_client_info)
+                    # 状态栏显示客户端断开信息
+                    self.signal_status_removed.emit(statusbar_client_info)
 
                     break
 
