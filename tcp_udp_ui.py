@@ -9,7 +9,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
 from netAssitui import Ui_NetAssist
 from time import ctime
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 class Tcp_ucpUi(Ui_NetAssist):
     # 主线程属性继承自Ui_NetAssist
     # 信号槽机制：设置一个信号，用于触发接收区写入动作
@@ -17,6 +17,7 @@ class Tcp_ucpUi(Ui_NetAssist):
     signal_status_connected = pyqtSignal(str)
     signal_status_removed = pyqtSignal(str)
     signal_add_clientstatus_info = pyqtSignal(str)
+    signal_messagebox_info = pyqtSignal(str)
 
     # statusbar上添加的控件
     # 使用字典方式进行管理
@@ -37,21 +38,7 @@ class Tcp_ucpUi(Ui_NetAssist):
         self.signal_status_connected.connect(self.statusbar_connect)
         self.signal_status_removed.connect(self.statusbar_remove)
         self.signal_add_clientstatus_info.connect(self.add_clientstatus_plain)
-
-    def hex_str_convert(self,msg):
-        """
-        字符串和16进制相互转换
-        1.字符串转16进制显示（finished）
-        To do:
-            16进制发送
-        :param msg:
-        :return:
-        """
-        if self.hex_recv.isChecked():
-            hex_msg = self.str_to_hex(msg)
-        else:
-            hex_msg = msg
-        return hex_msg
+        self.signal_messagebox_info.connect(self.messagebox_info)
 
     def send_fileload(self):
         if self.file_load.isChecked():
@@ -68,6 +55,9 @@ class Tcp_ucpUi(Ui_NetAssist):
 
     def add_clientstatus_plain(self,info):
         self.DataRecvtext.insertPlainText(info)
+
+    def messagebox_info(self,info):
+        QMessageBox.critical(self,'错误',info)
 
     def write_msg(self, msg):
         # signal_write_msg信号会触发这个函数
@@ -92,12 +82,12 @@ class Tcp_ucpUi(Ui_NetAssist):
         else:
             if self.newline.isChecked():
                 # 将传入的msg进行字符串转16进制功能判断，显示处理
-                processed_msg = self.hex_str_convert(msg)
-                self.DataRecvtext.insertPlainText('\n%s' % processed_msg)
+                # processed_msg = self.hex_str_convert(msg)
+                self.DataRecvtext.insertPlainText('\n%s' % msg)
             else:
                 # 将传入的msg进行字符串转16进制功能判断，并显示处理
-                processed_msg = self.hex_str_convert(msg)
-                self.DataRecvtext.insertPlainText('%s' % processed_msg)
+                # processed_msg = self.hex_str_convert(msg)
+                self.DataRecvtext.insertPlainText('%s' % msg)
         # 滚动条移动到结尾
         self.DataRecvtext.moveCursor(QtGui.QTextCursor.End)
 
@@ -145,3 +135,15 @@ class Tcp_ucpUi(Ui_NetAssist):
         :return:
         """
         return ''.join([chr(i) for i in [int(b, 2) for b in s.split(' ')]])
+
+    def hex_show(self,str):
+        """
+        将字符串转换为大写字母并每隔2个字符用空格分割处理后得到一个新字符串
+        如：faa5fbb5fcc5fdd5010200000028000001900000000a002d00000000017d7840000003e800005fa55fb55fc55fd5
+            FA A5 FB B5 FC C5 FD D5 01 02 00 00 00 28 00 00 01 90 00 00 00 0A 00 2D 00 00 00 00 01 7D 78 40 00 00 03 E8 00 00 5F A5 5F B5 5F C5 5F D5
+        :param str:
+        :return:
+        """
+        t = str.upper()
+        return ' '.join([t[2*i:2*(i+1)] for i in range(len(t)//2)])
+        # / 是精确除法， // 是向下取整除法， % 是求模
