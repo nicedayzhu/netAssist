@@ -71,22 +71,14 @@ class Tcp_ucpUi(Ui_NetAssist):
         if self.timestamp.isChecked():
             if self.newline.isChecked():
                 self.DataRecvtext.insertPlainText('\n[%s]' % ctime())
-                # 将传入的msg进行字符串转16进制功能判断，显示处理
-                processed_msg = self.hex_str_convert(msg)
-                self.DataRecvtext.insertPlainText('%s' % processed_msg)
+                self.DataRecvtext.insertPlainText('%s' % msg)
             else:
                 self.DataRecvtext.insertPlainText('[%s]' % ctime())
-                # 将传入的msg进行字符串转16进制功能判断，显示处理
-                processed_msg = self.hex_str_convert(msg)
-                self.DataRecvtext.insertPlainText('%s' % processed_msg)
+                self.DataRecvtext.insertPlainText('%s' % msg)
         else:
             if self.newline.isChecked():
-                # 将传入的msg进行字符串转16进制功能判断，显示处理
-                # processed_msg = self.hex_str_convert(msg)
                 self.DataRecvtext.insertPlainText('\n%s' % msg)
             else:
-                # 将传入的msg进行字符串转16进制功能判断，并显示处理
-                # processed_msg = self.hex_str_convert(msg)
                 self.DataRecvtext.insertPlainText('%s' % msg)
         # 滚动条移动到结尾
         self.DataRecvtext.moveCursor(QtGui.QTextCursor.End)
