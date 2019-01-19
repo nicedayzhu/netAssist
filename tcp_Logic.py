@@ -284,7 +284,7 @@ class TcpLogic(Tcp_ucpUi):
                 send_msg = self.if_hex_send(get_msg)
                 print(send_msg)
                 # 判断发送是否为空
-                if send_msg:
+                if get_msg:
                     try:
                         # 发送为All connections，表示服务器向所有连入的客户端发送消息
                         if self.clients_list.currentIndex() == 0:
@@ -320,13 +320,16 @@ class TcpLogic(Tcp_ucpUi):
                 get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
                 # 判断是否是16进制发送
                 send_msg = self.if_hex_send(get_msg)
-                print(send_msg,len(send_msg))
-                if send_msg:
-                    self.s.send(send_msg)
+                print(send_msg)
+                if get_msg:
+                    try:
+                        self.s.send(send_msg)
+                        self.tx_count += len(send_msg)
+                        self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
+                    except Exception as ret:
+                        pass
                 else:
                     QMessageBox.critical(self, '警告', '发送不可为空')
-                self.tx_count += len(send_msg)
-                self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
             else:
                 QMessageBox.critical(self, '警告', '当前无任何连接')
 
