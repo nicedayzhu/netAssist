@@ -10,6 +10,7 @@ from PyQt5.QtCore import pyqtSignal
 from netAssitui import Ui_NetAssist
 from time import ctime
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
+import binascii
 class Tcp_ucpUi(Ui_NetAssist):
     # 主线程属性继承自Ui_NetAssist
     # 信号槽机制：设置一个信号，用于触发接收区写入动作
@@ -139,3 +140,21 @@ class Tcp_ucpUi(Ui_NetAssist):
         t = str.upper()
         return ' '.join([t[2*i:2*(i+1)] for i in range(len(t)//2)])
         # / 是精确除法， // 是向下取整除法， % 是求模
+
+    def if_hex_send(self,pre_msg):
+        # 设置16进制发送的功能
+        try:
+            if self.hex_send.isChecked():
+                send_msg = pre_msg.replace(' ', '')  # 删除无效的空格
+                if len(send_msg) % 2 != 0:
+                    # 十六进制发送输入的长度必须是2的倍数
+                    raise Exception('十六进制输入的长度必须是2的倍数')
+                send_msg = binascii.a2b_hex(send_msg)
+            else:
+                send_msg = pre_msg.encode('utf-8')
+            return send_msg
+
+        except binascii.Error as e:
+            QMessageBox.critical(self, '错误', '十六进制数中包含非法字符！')
+        except Exception as e:
+            QMessageBox.critical(self, '错误', '%s' % e)
