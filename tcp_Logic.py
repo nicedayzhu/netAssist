@@ -287,7 +287,7 @@ class TcpLogic(Tcp_ucpUi):
         else:
             if self.link :
                 # send_msg = (str(self.DataSendtext.toPlainText())).encode('utf-8')
-                get_msg = self.DataSendtext.toPlainText()
+                get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
                 # 判断是否是16进制发送
                 send_msg = self.if_hex_send(get_msg)
                 print(send_msg)
@@ -325,7 +325,7 @@ class TcpLogic(Tcp_ucpUi):
             QMessageBox.critical(self, '警告', '请先设置TCP网络')
         else:
             if self.link :
-                get_msg = self.DataSendtext.toPlainText()
+                get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
                 # 判断是否是16进制发送
                 send_msg = self.if_hex_send(get_msg)
                 print(send_msg,len(send_msg))
