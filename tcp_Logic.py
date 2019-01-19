@@ -40,15 +40,20 @@ class TcpLogic(Tcp_ucpUi):
         ip_port = (local_ip, int(local_port))
         self.BUFSIZE = 1024
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 创建TCP套接字
-
-        self.s.bind(ip_port)  # 绑定地址
-        self.s.listen(5)  # 监听链接
-        print('server listening...')
-
-        self.accept_th = threading.Thread(target=self.accept_concurrency)
-        # 设置线程为守护线程，防止退出主线程时，子线程仍在运行
-        self.accept_th.setDaemon(True)
-        self.accept_th.start()
+        try:
+            self.s.bind(ip_port)  # 绑定地址
+            self.s.listen(5)  # 监听链接
+        except Exception as ret:
+            print('Error:',ret)
+            QMessageBox.critical(self,'错误','端口已被占用')
+            # 关闭udp socket
+            self.socket_close()
+        else:
+            print('server listening...')
+            self.accept_th = threading.Thread(target=self.accept_concurrency)
+            # 设置线程为守护线程，防止退出主线程时，子线程仍在运行
+            self.accept_th.setDaemon(True)
+            self.accept_th.start()
 
     def accept_concurrency(self):
         """
