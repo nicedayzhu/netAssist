@@ -129,7 +129,7 @@ class TcpLogic(Tcp_ucpUi):
             else:
                 print(recv_msg)
                 if recv_msg:
-                    # 16进制功能检测
+                    # 16进制显示功能检测
                     if self.hex_recv.isChecked():
                         msg = binascii.b2a_hex(recv_msg).decode('utf-8')
                         # 例子：str(binascii.b2a_hex(b'\x01\x0212'))[2:-1] == > 01023132
@@ -201,7 +201,7 @@ class TcpLogic(Tcp_ucpUi):
             # 设置线程为守护线程，防止退出主线程时，子线程仍在运行
             self.client_th.setDaemon(True)
             self.client_th.start()
-            connect_info = '已连接到服务器IP: %s 端口: %s\n' % ip_port
+            connect_info = '已连接到服务器IP: %s 端口: %s' % ip_port
             self.signal_add_clientstatus_info.emit(connect_info)
 
     def tcp_client_concurrency(self):
@@ -212,21 +212,8 @@ class TcpLogic(Tcp_ucpUi):
         while True:
             recv_msg = self.s.recv(1024)
             if recv_msg:
-                if self.hex_recv.isChecked():
-                    msg = binascii.b2a_hex(recv_msg).decode('utf-8')
-                    print(msg, type(msg), len(msg))  # msg为 str 类型
-                    msg = self.hex_show(msg) # 将解码后的16进制数据按照两个字符+'空字符'发送到接收框中显示
-                    self.signal_write_msg.emit(msg)
-                else:
-                    try:
-                        # 尝试对接收到的数据解码，如果解码成功，即使解码后的数据是ascii可显示字符也直接发送，
-                        msg = recv_msg.decode('utf-8')
-                        print(msg)
-                        self.signal_write_msg.emit(msg)
-                    except Exception as ret:
-                        # 如果出现解码错误，提示用户选中16进制显示
-                        self.signal_messagebox_info.emit('解码错误，请尝试16进制显示')
-
+                # 判断是否以16进制显示并处理
+                self.if_hex_show_tcpc_udp(recv_msg)
                 # 将接收到的数据字节数显示在状态栏的计数区域
                 self.rx_count += len(recv_msg)
                 self.statusbar_dict['rx'].setText('接收计数：%s' % self.rx_count)

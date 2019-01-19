@@ -10,6 +10,7 @@ from tcp_udp_ui import Tcp_ucpUi
 import socket
 import threading
 import stopThreading
+import binascii
 from time import ctime
 import time
 
@@ -60,21 +61,18 @@ class UdpLogic(Tcp_ucpUi):
             recv_msg, self.raddr = self.us.recvfrom(self.BUFSIZE)
             # 将连接到本服务器的客户端信息显示在客户端列表下拉框中
             statusbar_client_info = '%s:%d' % (self.raddr[0], self.raddr[1])
+            connect_info = '[Remote IP %s Port: %s ]' % (self.raddr[0], self.raddr[1])
+            print(self.raddr, type(self.raddr))
+
             if show_client_info is True:
                 self.clients_list.addItem(statusbar_client_info)
                 # 状态栏显示客户端连接成功信息
                 self.signal_status_connected.emit(statusbar_client_info)
+                self.signal_add_clientstatus_info.emit(connect_info)
                 show_client_info = False
 
-            msg = recv_msg.decode('utf-8')
-            print(self.raddr,type(self.raddr))
-            print(msg, type(msg))  # msg为 str 类型
-            if show_client_info is True:
-            # 将接收到的消息发送到接收框中进行显示
-                self.signal_write_msg.emit('[Remote IP %s Port: %s ]\n' % self.raddr + msg)
-                show_client_info = False
-            else:
-                self.signal_write_msg.emit(msg)
+            # 判断是否以16进制显示并处理
+            self.if_hex_show_tcpc_udp(recv_msg)
             # 将接收到的数据字节数显示在状态栏的计数区域
             self.rx_count += len(recv_msg)
             self.statusbar_dict['rx'].setText('接收计数：%s' % self.rx_count)

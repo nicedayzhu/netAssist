@@ -142,7 +142,11 @@ class Tcp_ucpUi(Ui_NetAssist):
         # / 是精确除法， // 是向下取整除法， % 是求模
 
     def if_hex_send(self,pre_msg):
-        # 设置16进制发送的功能
+        """
+        判断是否以16进制发送并处理
+        :param pre_msg:
+        :return:
+        """
         try:
             if self.hex_send.isChecked():
                 send_msg = pre_msg.replace(' ', '')  # 删除无效的空格
@@ -158,3 +162,24 @@ class Tcp_ucpUi(Ui_NetAssist):
             QMessageBox.critical(self, '错误', '十六进制数中包含非法字符！')
         except Exception as e:
             QMessageBox.critical(self, '错误', '%s' % e)
+
+    def if_hex_show_tcpc_udp(self,pre_msg):
+        """
+        判断是否以16进制显示并处理
+        :param pre_msg:
+        :return:
+        """
+        if self.hex_recv.isChecked():
+            msg = binascii.b2a_hex(pre_msg).decode('utf-8')
+            print(msg, type(msg), len(msg))  # msg为 str 类型
+            msg = self.hex_show(msg)  # 将解码后的16进制数据按照两个字符+'空字符'发送到接收框中显示
+            self.signal_write_msg.emit(msg)
+        else:
+            try:
+                # 尝试对接收到的数据解码，如果解码成功，即使解码后的数据是ascii可显示字符也直接发送，
+                msg = pre_msg.decode('utf-8')
+                print(msg)
+                self.signal_write_msg.emit(msg)
+            except Exception as ret:
+                # 如果出现解码错误，提示用户选中16进制显示
+                self.signal_messagebox_info.emit('解码错误，请尝试16进制显示')
