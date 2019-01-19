@@ -142,10 +142,9 @@ class TcpLogic(Tcp_ucpUi):
                             self.signal_write_msg.emit(msg)
                     else:
                         try:
-                            # 尝试对接收到的数据解码
+                            # 尝试对接收到的数据解码，如果解码成功，即使解码后的数据是ascii可显示字符也直接发送，
                             msg = recv_msg.decode('utf-8')
                             print(msg)
-                            msg = self.hex_show(msg)
                             if show_client_info is True:
                                 # 将接收到的消息发送到接收框中进行显示，附带客户端信息
                                 connect_info = '[Remote IP %s Port: %s ]' % addr
@@ -275,10 +274,20 @@ class TcpLogic(Tcp_ucpUi):
             QMessageBox.critical(self, '警告', '请先设置TCP网络')
         else:
             if self.link :
-                send_msg = (str(self.DataSendtext.toPlainText())).encode('utf-8')
+                # send_msg = (str(self.DataSendtext.toPlainText())).encode('utf-8')
+                send_msg = self.DataSendtext.toPlainText()
+                if self.hex_send:
+                    send_msg = send_msg.replace(' ', '')  # 删除无效的空格
+                    if len(send_msg) % 2 != 0:
+                        # 十六进制发送输入的长度必须是2的倍数
+                        raise Exception('十六进制输入的长度必须是2的倍数')
+                    send_msg = binascii.a2b_hex(send_msg)
+                else:
+                    send_msg = send_msg.encode('utf-8')
+
                 print(send_msg,len(send_msg))
                 # 判断发送是否为空
-                if send_msg != b'':
+                if send_msg:
                     try:
                         # 发送为All connections，表示服务器向所有连入的客户端发送消息
                         if self.clients_list.currentIndex() == 0:
