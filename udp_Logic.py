@@ -35,7 +35,6 @@ class UdpLogic(Tcp_ucpUi):
         local_port = self.Localport_lineedit.text()
         ip_port = (local_ip, int(local_port))
         self.BUFSIZE = 1024
-
         self.us = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
             self.us.bind(ip_port)  # 绑定地址
@@ -165,27 +164,34 @@ class UdpLogic(Tcp_ucpUi):
             QMessageBox.critical(self, '警告', '请先设置UDP网络')
         else:
             if self.link :
-                send_msg = (str(self.DataSendtext.toPlainText())).encode('utf-8')
+                get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
+                # 判断是否是16进制发送
+                send_msg = self.if_hex_send(get_msg)
+                print(send_msg)
                 # print(send_msg)
                 # udpserver模式
                 if self.prot_box.currentIndex() == 2:
                     # 判断发送是否为空
-                    if send_msg != b'':
-                        # try:
-                        self.us.sendto(send_msg, self.raddr)
-                        # except Exception as e_crst:
-                        #     print("Error:",e_crst)
+                    if get_msg:
+                        try:
+                            self.us.sendto(send_msg, self.raddr)
+                            self.tx_count += len(send_msg)
+                            self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
+                        except Exception as ret:
+                            pass
                     else:
                         QMessageBox.critical(self, '警告', '发送不可为空')
                 # udpclient模式
                 if self.prot_box.currentIndex() == 3:
-                    if send_msg != b'':
-                        self.us.sendto(send_msg, self.remote_ip_port)
+                    if get_msg:
+                        try:
+                            self.us.sendto(send_msg, self.remote_ip_port)
+                            self.tx_count += len(send_msg)
+                            self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
+                        except Exception as ret:
+                            pass
                     else:
                         QMessageBox.critical(self, '警告', '发送不可为空')
-                self.tx_count += len(send_msg)
-                self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
-
             else:
                 QMessageBox.critical(self, '警告', '当前无任何连接')
 
