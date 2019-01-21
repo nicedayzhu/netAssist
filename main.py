@@ -21,6 +21,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.setupUi(self)
         self.working = False
         self.newline.setChecked(1)
+        self.remoteip_lbl.hide()
+        self.remoteip_text.hide()
+        self.remoteport_text.hide()
+        self.remoteport_lbl.hide()
         self.init()
         self.custom_connect()
         self.init_statusbar()
@@ -139,6 +143,13 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
             self.open_btn.setText('开始连接')
             self.clients_lbl.setText('远程主机:')
             self.clients_list.clear()
+        if imf_s == 2:
+            self.remoteip_lbl.show()
+            self.remoteip_text.show()
+            self.remoteport_text.show()
+            self.remoteport_lbl.show()
+            self.clients_list.hide()
+            self.clients_lbl.hide()
 
     def recv_dataclear(self):
         """

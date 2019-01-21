@@ -46,7 +46,7 @@ class UdpLogic(Tcp_ucpUi):
             # 关闭udp socket
             self.socket_close_u()
         else:
-            print('UDP connecting...')
+            print('UDP establishing...')
             self.us_th = threading.Thread(target=self.udp_client_concurrency)
             self.us_th.setDaemon(True)
             self.us_th.start()
@@ -101,27 +101,30 @@ class UdpLogic(Tcp_ucpUi):
         """
         remote_ip = self.remoteip_text.text()
         remote_port = self.remoteport_text.text()
-        self.remote_ip_port = (remote_ip,int(remote_port))
-
-        if self.working is False :
-            QMessageBox.critical(self, '警告', '请先设置UDP网络')
+        try:
+            self.remote_ip_port = (remote_ip,int(remote_port))
+        except Exception as e:
+            QMessageBox.critical(self,'错误','请填写正确的远程主机IP和端口号')
         else:
-            if self.link :
-                get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
-                # 判断是否是16进制发送
-                send_msg = self.if_hex_send(get_msg)
-                print(send_msg)
-                if get_msg:
-                    try:
-                        self.us.sendto(send_msg, self.remote_ip_port)
-                        self.tx_count += len(send_msg)
-                        self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
-                    except Exception as ret:
-                        pass
-                else:
-                    QMessageBox.critical(self, '警告', '发送不可为空')
+            if self.working is False :
+                QMessageBox.critical(self, '警告', '请先设置UDP网络')
             else:
-                QMessageBox.critical(self, '警告', '当前无任何连接')
+                if self.link :
+                    get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
+                    # 判断是否是16进制发送
+                    send_msg = self.if_hex_send(get_msg)
+                    print(send_msg)
+                    if get_msg:
+                        try:
+                            self.us.sendto(send_msg, self.remote_ip_port)
+                            self.tx_count += len(send_msg)
+                            self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
+                        except Exception as ret:
+                            pass
+                    else:
+                        QMessageBox.critical(self, '警告', '发送不可为空')
+                else:
+                    QMessageBox.critical(self, '警告', '当前无任何连接')
 
     def file_send_u(self):
         """
