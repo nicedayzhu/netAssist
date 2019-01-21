@@ -19,64 +19,10 @@ class UdpLogic(Tcp_ucpUi):
         super(UdpLogic, self).__init__()
         self.us = None  # us代表udp socket
         self.us_th = None
-        self.client_th = None
         self.link = False # 初始化连接状态为False
         self.working = False # 初始化工作状态为False
 
-    def socket_open_udps(self):
-        """
-        功能函数，UDP服务端开启的方法
-        :return: None
-        """
-        self.open_btn.setEnabled(False)
-        self.working = True
-
-        local_ip = self.Localip_lineedit.text()
-        local_port = self.Localport_lineedit.text()
-        ip_port = (local_ip, int(local_port))
-        self.BUFSIZE = 1024
-        self.us = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:
-            self.us.bind(ip_port)  # 绑定地址
-        except Exception as ret:
-            print('Error:',ret)
-            QMessageBox.critical(self,'错误','端口已被占用')
-            # 关闭udp socket
-            self.socket_close_u()
-        else:
-            print('UDPServer listening...')
-            self.us_th = threading.Thread(target=self.udp_server_concurrency)
-            self.us_th.setDaemon(True)
-            self.us_th.start()
-            self.link = True
-
-    def udp_server_concurrency(self):
-        """
-        创建新线程以供UDPServer持续监听
-        :return:
-        """
-        show_client_info = True
-        while True:
-            recv_msg, self.raddr = self.us.recvfrom(self.BUFSIZE)
-            # 将连接到本服务器的客户端信息显示在客户端列表下拉框中
-            statusbar_client_info = '%s:%d' % (self.raddr[0], self.raddr[1])
-            connect_info = '[Remote IP %s Port: %s ]' % (self.raddr[0], self.raddr[1])
-            print(self.raddr, type(self.raddr))
-
-            if show_client_info is True:
-                self.clients_list.addItem(statusbar_client_info)
-                # 状态栏显示客户端连接成功信息
-                self.signal_status_connected.emit(statusbar_client_info)
-                self.signal_add_clientstatus_info.emit(connect_info)
-                show_client_info = False
-
-            # 判断是否以16进制显示并处理
-            self.if_hex_show_tcpc_udp(recv_msg)
-            # 将接收到的数据字节数显示在状态栏的计数区域
-            self.rx_count += len(recv_msg)
-            self.statusbar_dict['rx'].setText('接收计数：%s' % self.rx_count)
-
-    def socket_open_udpc(self):
+    def socket_open_udp(self):
         """
         功能函数，UDPClient开启的方法
         :return: None
@@ -84,18 +30,27 @@ class UdpLogic(Tcp_ucpUi):
         self.open_btn.setEnabled(False)
         self.working = True
 
-        remote_ip = self.Localip_lineedit.text()
-        remote_port = self.Localport_lineedit.text()
-        self.remote_ip_port = (remote_ip, int(remote_port))
+        lo_ip = self.Localip_lineedit.text()
+        lo_port = self.Localport_lineedit.text()
+        lo_ip_port = (lo_ip, int(lo_port))
+
         self.BUFSIZE = 1024
 
         self.us = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        print('UDPClient connecting...')
 
-        self.client_th = threading.Thread(target=self.udp_client_concurrency)
-        self.client_th.setDaemon(True)
-        self.client_th.start()
-        self.link = True
+        try:
+            self.us.bind(lo_ip_port)  # 绑定地址
+        except Exception as ret:
+            print('Error:',ret)
+            QMessageBox.critical(self,'错误','端口已被占用')
+            # 关闭udp socket
+            self.socket_close_u()
+        else:
+            print('UDP connecting...')
+            self.us_th = threading.Thread(target=self.udp_client_concurrency)
+            self.us_th.setDaemon(True)
+            self.us_th.start()
+            self.link = True
 
     def udp_client_concurrency(self):
         """
@@ -109,48 +64,32 @@ class UdpLogic(Tcp_ucpUi):
             except Exception as ret:
                 pass
             else:
-                msg = recv_msg.decode('utf-8')
-                print(self.addr)
-                print(msg, type(msg))  # msg为 str 类型
+                statusbar_client_info = '%s:%d' % (self.addr[0], self.addr[1])
+                connect_info = '[Remote IP %s Port: %s ]' % (self.addr[0], self.addr[1])
+                print(self.addr, type(self.addr))
                 if show_client_info is True:
-                    # 将接收到的消息发送到接收框中进行显示
-                    self.signal_write_msg.emit('[Remote IP %s Port: %s ]\n' % self.addr + msg)
+                    # 状态栏显示客户端连接成功信息
+                    self.signal_status_connected.emit(statusbar_client_info)
+                    self.signal_add_clientstatus_info.emit(connect_info)
                     show_client_info = False
-                else:
-                    self.signal_write_msg.emit(msg)
+
+                # 判断是否以16进制显示并处理
+                self.if_hex_show_tcpc_udp(recv_msg)
                 # 将接收到的数据字节数显示在状态栏的计数区域
                 self.rx_count += len(recv_msg)
                 self.statusbar_dict['rx'].setText('接收计数：%s' % self.rx_count)
 
     def socket_close_u(self):
-        self.clients_list.clear()
-        if self.prot_box.currentIndex() == 2:
-            try:
-                self.us.close()
-                self.working = False
-                self.open_btn.setEnabled(True)
-                print('UDP closed...')
-                self.open_btn.setEnabled(True)
-            except Exception as ret:
-                pass
-
-        if self.prot_box.currentIndex() == 3:
-            try:
-                self.us.close()
-                self.working = False
-                self.open_btn.setEnabled(True)
-                print('UDP closed...')
-                self.open_btn.setEnabled(True)
-            except Exception as ret:
-                pass
-
         try:
-            stopThreading.stop_thread(self.us_th)
+            self.us.close()
+            self.working = False
+            self.open_btn.setEnabled(True)
+            print('UDP closed...')
+            self.open_btn.setEnabled(True)
         except Exception as ret:
             pass
-
         try:
-            stopThreading.stop_thread(self.client_th)
+            stopThreading.stop_thread(self.us_th)
         except Exception as ret:
             pass
 
@@ -160,6 +99,10 @@ class UdpLogic(Tcp_ucpUi):
         用于UDP发送消息
         :return:
         """
+        remote_ip = self.remoteip_text.text()
+        remote_port = self.remoteport_text.text()
+        self.remote_ip_port = (remote_ip,int(remote_port))
+
         if self.working is False :
             QMessageBox.critical(self, '警告', '请先设置UDP网络')
         else:
@@ -168,30 +111,15 @@ class UdpLogic(Tcp_ucpUi):
                 # 判断是否是16进制发送
                 send_msg = self.if_hex_send(get_msg)
                 print(send_msg)
-                # print(send_msg)
-                # udpserver模式
-                if self.prot_box.currentIndex() == 2:
-                    # 判断发送是否为空
-                    if get_msg:
-                        try:
-                            self.us.sendto(send_msg, self.raddr)
-                            self.tx_count += len(send_msg)
-                            self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
-                        except Exception as ret:
-                            pass
-                    else:
-                        QMessageBox.critical(self, '警告', '发送不可为空')
-                # udpclient模式
-                if self.prot_box.currentIndex() == 3:
-                    if get_msg:
-                        try:
-                            self.us.sendto(send_msg, self.remote_ip_port)
-                            self.tx_count += len(send_msg)
-                            self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
-                        except Exception as ret:
-                            pass
-                    else:
-                        QMessageBox.critical(self, '警告', '发送不可为空')
+                if get_msg:
+                    try:
+                        self.us.sendto(send_msg, self.remote_ip_port)
+                        self.tx_count += len(send_msg)
+                        self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
+                    except Exception as ret:
+                        pass
+                else:
+                    QMessageBox.critical(self, '警告', '发送不可为空')
             else:
                 QMessageBox.critical(self, '警告', '当前无任何连接')
 
@@ -209,22 +137,10 @@ class UdpLogic(Tcp_ucpUi):
                 else:
                     send_msg = b''
                 # print(send_msg)
-                # 若当前状态为udp server模式
-                if self.prot_box.currentIndex() == 2:
-                    # 判断发送是否为空
-                    if send_msg != b'':
-                        # try:
-                        self.us.sendto(send_msg, self.raddr)
-                        # except Exception as e_crst:
-                        #     print("Error:",e_crst)
-                    else:
-                        QMessageBox.critical(self, '警告', '发送不可为空')
-                # 若当前状态为udp client状态
-                if self.prot_box.currentIndex() == 3:
-                    if send_msg != b'':
-                        self.us.sendto(send_msg, self.remote_ip_port)
-                    else:
-                        QMessageBox.critical(self, '警告', '发送不可为空')
+                if send_msg != b'':
+                    self.us.sendto(send_msg, self.remote_ip_port)
+                else:
+                    QMessageBox.critical(self, '警告', '发送不可为空')
 
             else:
                 QMessageBox.critical(self, '警告', '当前无任何连接')

@@ -91,11 +91,8 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
             # 创建TCPClient
             self.socket_open_tcpc()
         if self.prot_box.currentIndex() == 2:
-            # 创建UDP socket
-            self.socket_open_udps()
-        if self.prot_box.currentIndex() == 3:
             # 创建UDPClient socket
-            self.socket_open_udpc()
+            self.socket_open_udp()
         if self.working is True:
             self.statusbar_dict['status'].setText('状态：打开')
 
@@ -106,7 +103,7 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         if self.prot_box.currentIndex() == 1:
             # 断开TCPClient
             self.socket_close()
-        if self.prot_box.currentIndex() == 2 or self.prot_box.currentIndex() == 3:
+        if self.prot_box.currentIndex() == 2:
             # 关闭UDP socket
             self.socket_close_u()
         self.statusbar_dict['status'].setText('状态：关闭')
@@ -116,7 +113,7 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
             self.data_send_t()
         if self.prot_box.currentIndex() == 1:
             self.data_send_t_c()
-        if self.prot_box.currentIndex() == 2 or self.prot_box.currentIndex() == 3:
+        if self.prot_box.currentIndex() == 2:
             self.data_send_u()
 
     def file_send_select(self):
@@ -124,19 +121,19 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
             self.file_send_t()
         if self.prot_box.currentIndex() == 1:
             self.file_send_t_c()
-        if self.prot_box.currentIndex() == 2 or self.prot_box.currentIndex() == 3:
+        if self.prot_box.currentIndex() == 2:
             self.file_send_u()
 
     def proto_imf(self):
         # 协议类型选择
         imf_s = self.prot_box.currentIndex()
-        if imf_s == 0 or imf_s == 2:
+        if imf_s == 0:
             self.clients_list.clear()
             self.localip_lb.setText('2.本地ip地址')
             self.localport_lb.setText('3.本地端口号')
             self.open_btn.setText('开始监听')
             self.clients_lbl.setText('客户端:')
-        if imf_s == 1 or imf_s == 3:
+        if imf_s == 1:
             self.localip_lb.setText('2.远程ip地址')
             self.localport_lb.setText('3.远程端口号')
             self.open_btn.setText('开始连接')

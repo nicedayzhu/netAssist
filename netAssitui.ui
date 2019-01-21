@@ -56,12 +56,7 @@
            </item>
            <item>
             <property name="text">
-             <string>UDP Server</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>UDP Client</string>
+             <string>UDP</string>
             </property>
            </item>
           </widget>
@@ -286,6 +281,38 @@
               <bool>false</bool>
              </property>
             </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLabel" name="remoteip_lbl">
+               <property name="text">
+                <string>远程IP</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="remoteip_text"/>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="remoteport_lbl">
+               <property name="text">
+                <string>端口号</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="remoteport_text"/>
+             </item>
+            </layout>
            </item>
           </layout>
          </item>
