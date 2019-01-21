@@ -8,10 +8,11 @@
 
 # -*- coding: utf-8 -*-
 
-import sys,tcp_Logic,udp_Logic,tcp_udp_ui
+import sys, tcp_Logic, udp_Logic, tcp_udp_ui
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizePolicy, QLabel, QPushButton, QFileDialog, QMessageBox
 from netAssitui import Ui_NetAssist
+import qdarkstyle
 
 import os
 class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_ui.Tcp_ucpUi,Ui_NetAssist):
@@ -99,6 +100,7 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
             self.socket_open_udp()
         if self.working is True:
             self.statusbar_dict['status'].setText('状态：打开')
+        self.prot_box.setEnabled(0)
 
     def click_select_close(self):
         if self.prot_box.currentIndex() == 0:
@@ -110,6 +112,7 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         if self.prot_box.currentIndex() == 2:
             # 关闭UDP socket
             self.socket_close_u()
+        self.prot_box.setEnabled(1)
         self.statusbar_dict['status'].setText('状态：关闭')
 
     def data_send_select(self):
@@ -144,6 +147,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
             self.clients_lbl.setText('远程主机:')
             self.clients_list.clear()
         if imf_s == 2:
+            self.localip_lb.setText('2.本地ip地址')
+            self.localport_lb.setText('3.本地端口号')
+            self.open_btn.setText('开始监听')
+            self.clients_lbl.setText('客户端:')
             self.remoteip_lbl.show()
             self.remoteip_text.show()
             self.remoteport_text.show()
@@ -206,5 +213,6 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     myWin = PyQt5_Netassist()
+    # app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     myWin.show()
     sys.exit(app.exec_())

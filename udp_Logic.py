@@ -10,9 +10,6 @@ from tcp_udp_ui import Tcp_ucpUi
 import socket
 import threading
 import stopThreading
-import binascii
-from time import ctime
-import time
 
 class UdpLogic(Tcp_ucpUi):
     def __init__(self):
@@ -106,10 +103,10 @@ class UdpLogic(Tcp_ucpUi):
         except Exception as e:
             QMessageBox.critical(self,'错误','请填写正确的远程主机IP和端口号')
         else:
-            if self.working is False :
+            if self.working is False:
                 QMessageBox.critical(self, '警告', '请先设置UDP网络')
             else:
-                if self.link :
+                if self.link:
                     get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
                     # 判断是否是16进制发送
                     send_msg = self.if_hex_send(get_msg)
@@ -131,7 +128,7 @@ class UdpLogic(Tcp_ucpUi):
         用于UDP发送消息
         :return:
         """
-        if self.working is False :
+        if self.working is False:
             QMessageBox.critical(self, '警告', '请先设置UDP网络')
         else:
             if self.link :

@@ -277,7 +277,7 @@ class TcpLogic(Tcp_ucpUi):
         if self.working is False :
             QMessageBox.critical(self, '警告', '请先设置TCP网络')
         else:
-            if self.link :
+            if self.link:
                 # send_msg = (str(self.DataSendtext.toPlainText())).encode('utf-8')
                 get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
                 # 判断是否是16进制发送
@@ -313,10 +313,10 @@ class TcpLogic(Tcp_ucpUi):
         功能函数，用于TCP客户端和TCP服务器发送消息
         :return: None
         """
-        if self.working is False :
+        if self.working is False:
             QMessageBox.critical(self, '警告', '请先设置TCP网络')
         else:
-            if self.link :
+            if self.link:
                 get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
                 # 判断是否是16进制发送
                 send_msg = self.if_hex_send(get_msg)
@@ -339,7 +339,7 @@ class TcpLogic(Tcp_ucpUi):
         :return: None
         """
 
-        if self.working is False :
+        if self.working is False:
             QMessageBox.critical(self, '警告', '请先设置TCP网络')
         else:
             if self.link :
@@ -377,10 +377,10 @@ class TcpLogic(Tcp_ucpUi):
         功能函数，用于TCP客户端和TCP服务器发送消息
         :return: None
         """
-        if self.working is False :
+        if self.working is False:
             QMessageBox.critical(self, '警告', '请先设置TCP网络')
         else:
-            if self.link :
+            if self.link:
                 if self.file_load.isChecked():
                     send_msg = self.f_data
                 else:
