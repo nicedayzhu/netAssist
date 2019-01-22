@@ -13,6 +13,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizePolicy, QLabel, QPushButton, QFileDialog, QMessageBox
 from netAssitui import Ui_NetAssist
 import qdarkstyle
+from PyQt5.QtCore import QTimer
 
 import os
 class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_ui.Tcp_ucpUi,Ui_NetAssist):
@@ -39,6 +40,8 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.close_btn.clicked.connect(self.click_select_close)
         # 按钮发送数据
         self.send_Btn.clicked.connect(self.data_send_select)
+        # 文件发送按钮
+        self.file_send_btn.clicked.connect(self.file_send_select)
         # 清空接收区显示
         self.clr_btn.clicked.connect(self.recv_dataclear)
         # 清空发送区显示
@@ -49,17 +52,15 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.save_btn.clicked.connect(self.datasave2file)
         # 载入需要发送的文件
         self.file_load.toggled.connect(self.send_fileload)
-        # 文件发送按钮
-        self.file_send_btn.clicked.connect(self.file_send_select)
+        # 定时器启动检测
+        self.Sendloop.toggled.connect(self.checktimer)
 
     def init_statusbar(self):
-
         # 设置statusbar所有控件自动延伸
         self.statusbar.setSizePolicy(QSizePolicy.Expanding,
                                      QSizePolicy.Expanding)
         # 设置status隐藏控制点（靠齐最右边）
         self.statusbar.setSizeGripEnabled(False)
-
         self.statusbar_dict['status'] = QLabel()
         self.statusbar_dict['status'].setText('状态：Ready')
         self.statusbar_dict['tx'] = QLabel()
@@ -87,6 +88,22 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.rx_count = 0
         self.tx_count = 0
 
+    def checktimer(self):
+        if self.Sendloop.isChecked():
+            self.timer = QTimer(self)
+            try:
+                self.interval = int(self.loopinterval.text())
+                if self.file_load.isChecked():
+                    self.timer.timeout.connect(self.file_send_select)
+                else:
+                    self.timer.timeout.connect(self.data_send_select)
+                self.timer.start(self.interval)
+            except Exception as ret:
+                QMessageBox.critical(self, '警告', '请输入合法的时间间隔/ms')
+                self.Sendloop.setChecked(0)
+        else:
+            self.timer.stop()
+
     def click_select_open(self):
         if self.prot_box.currentIndex() == 0:
             # 创建TCPServer
@@ -103,6 +120,8 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.prot_box.setEnabled(0)
 
     def click_select_close(self):
+        if self.Sendloop.isChecked():
+            self.timer.stop()
         if self.prot_box.currentIndex() == 0:
             # 关闭TCPServer
             self.socket_close()
@@ -171,6 +190,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.DataSendtext.clear()
 
     def rfilechoose(self):
+        '''
+        选择要保存的文件名
+        :return:
+        '''
         if self.recv2file.isChecked():
             '''接收转向文件'''
             file_name, ok = QFileDialog.getSaveFileName(
@@ -182,6 +205,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
                 self.save_file_name = None
 
     def datasave2file(self):
+        '''
+        将接收框中的消息保存到文件
+        :return:
+        '''
         if not self.DataRecvtext.toPlainText():
             QMessageBox.critical(self, '警告', '当前没有需要的数据')
         else:

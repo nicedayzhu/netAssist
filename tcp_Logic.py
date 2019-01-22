@@ -335,7 +335,7 @@ class TcpLogic(Tcp_ucpUi):
 
     def file_send_t(self):
         """
-        功能函数，用于TCP服务端和TCP客户端发送消息
+        功能函数，用于TCP服务端和TCP客户端发送文件
         :return: None
         """
 
@@ -374,7 +374,7 @@ class TcpLogic(Tcp_ucpUi):
 
     def file_send_t_c(self):
         """
-        功能函数，用于TCP客户端和TCP服务器发送消息
+        功能函数，用于TCP客户端和TCP服务器发送文件
         :return: None
         """
         if self.working is False:

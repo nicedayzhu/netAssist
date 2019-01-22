@@ -125,7 +125,7 @@ class UdpLogic(Tcp_ucpUi):
 
     def file_send_u(self):
         """
-        用于UDP发送消息
+        用于UDP发送文件
         :return:
         """
         if self.working is False:

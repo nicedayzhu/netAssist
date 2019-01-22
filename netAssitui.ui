@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>700</height>
+    <width>821</width>
+    <height>702</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,6 +17,70 @@
    <layout class="QHBoxLayout" name="horizontalLayout_5">
     <item>
      <layout class="QGridLayout" name="gridLayout_9">
+      <item row="1" column="0">
+       <widget class="QGroupBox" name="RecvSettings">
+        <property name="maximumSize">
+         <size>
+          <width>221</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>接收区设置</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0" colspan="2">
+          <widget class="QCheckBox" name="recv2file">
+           <property name="text">
+            <string>保存数据到文件</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <widget class="QCheckBox" name="newline">
+           <property name="text">
+            <string>自动换行显示</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" colspan="2">
+          <widget class="QCheckBox" name="timestamp">
+           <property name="text">
+            <string>显示接收时间</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QCheckBox" name="stopdsp">
+           <property name="text">
+            <string>暂停显示</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QPushButton" name="save_btn">
+           <property name="text">
+            <string>保存数据</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="2">
+          <widget class="QCheckBox" name="hex_recv">
+           <property name="text">
+            <string>16进制显示</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QPushButton" name="clr_btn">
+           <property name="text">
+            <string>清空显示</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QGroupBox" name="NetSettings">
         <property name="maximumSize">
@@ -109,118 +173,76 @@
         </layout>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QGroupBox" name="RecvSettings">
-        <property name="title">
-         <string>接收区设置</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0" colspan="2">
-          <widget class="QCheckBox" name="recv2file">
-           <property name="text">
-            <string>保存数据到文件</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QCheckBox" name="newline">
-           <property name="text">
-            <string>自动换行显示</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QCheckBox" name="timestamp">
-           <property name="text">
-            <string>显示接收时间</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="QCheckBox" name="hex_recv">
-           <property name="text">
-            <string>16进制显示</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QCheckBox" name="stopdsp">
-           <property name="text">
-            <string>暂停显示</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QPushButton" name="save_btn">
-           <property name="text">
-            <string>保存数据</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QPushButton" name="clr_btn">
-           <property name="text">
-            <string>清空显示</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QGroupBox" name="SendSettings">
+        <property name="maximumSize">
+         <size>
+          <width>221</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="title">
          <string>发送设置</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="file_load">
+         <item row="4" column="0">
+          <widget class="QCheckBox" name="Sendloop">
            <property name="text">
-            <string>载入文件</string>
+            <string>周期发送</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QCheckBox" name="Sendcheck">
+         <item row="4" column="3">
+          <widget class="QLabel" name="ms_lbl">
            <property name="text">
-            <string>自动发送校验位</string>
+            <string>ms</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="0" colspan="2">
+         <item row="2" column="0" colspan="3">
           <widget class="QCheckBox" name="Sendclear">
            <property name="text">
             <string>发送完自动清空</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="QCheckBox" name="hex_send">
+         <item row="1" column="0" colspan="3">
+          <widget class="QCheckBox" name="Sendcheck">
            <property name="text">
-            <string>16进制发送</string>
+            <string>自动发送校验位</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="0" colspan="2">
-          <widget class="QCheckBox" name="Sendloop">
-           <property name="text">
-            <string>数据流循环发送</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
+         <item row="5" column="0" colspan="2">
           <widget class="QPushButton" name="file_send_btn">
            <property name="text">
             <string>发送文件</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="1">
+         <item row="3" column="0" colspan="3">
+          <widget class="QCheckBox" name="hex_send">
+           <property name="text">
+            <string>16进制发送</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="2" colspan="2">
           <widget class="QPushButton" name="clr_btn2">
            <property name="text">
             <string>清空显示</string>
            </property>
           </widget>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <widget class="QCheckBox" name="file_load">
+           <property name="text">
+            <string>载入文件</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QLineEdit" name="loopinterval"/>
          </item>
         </layout>
        </widget>
@@ -374,7 +396,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>821</width>
      <height>26</height>
     </rect>
    </property>
