@@ -77,6 +77,10 @@ class UdpLogic(Tcp_ucpUi):
                 self.statusbar_dict['rx'].setText('接收计数：%s' % self.rx_count)
 
     def socket_close_u(self):
+        '''
+        关闭udpsocket以及其相关线程
+        :return:
+        '''
         try:
             self.us.close()
             self.working = False

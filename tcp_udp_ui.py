@@ -42,6 +42,10 @@ class Tcp_ucpUi(Ui_NetAssist):
         self.signal_messagebox_info.connect(self.messagebox_info)
 
     def send_fileload(self):
+        """
+        载入文件功能
+        :return:
+        """
         if self.file_load.isChecked():
             # 载入发送文件
             send_file_name, sf_ok = QFileDialog.getOpenFileName(
@@ -55,9 +59,21 @@ class Tcp_ucpUi(Ui_NetAssist):
                 self.statusbar.showMessage('文件载入失败', msecs=3000)
 
     def add_clientstatus_plain(self,info):
+        # signal_add_clientstatus_info信号会触发本函数
+        """
+        向接收框发送客户端连接信息
+        :param info:
+        :return:
+        """
         self.DataRecvtext.insertPlainText(info)
 
     def messagebox_info(self,info):
+        # signal_messagebox_info信号会触发本函数
+        """
+        弹出消息框
+        :param info:
+        :return:
+        """
         QMessageBox.critical(self,'错误',info)
 
     def write_msg(self, msg):
@@ -92,9 +108,11 @@ class Tcp_ucpUi(Ui_NetAssist):
                 combo.removeItem(i)
 
     def statusbar_connect(self,statusbar_client_info):
+        # signal_messagebox_info信号会触发本函数
         self.statusbar.showMessage('客户端：%s 成功连接！' % statusbar_client_info, msecs=2000)
 
     def statusbar_remove(self,statusbar_client_info):
+        # signal_status_removed信号会触发本函数
         self.statusbar.showMessage('客户端：%s 断开连接！' % statusbar_client_info, msecs=2000)
 
     def str_to_hex(self,s):

@@ -71,7 +71,6 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.statusbar_dict['clear'] = QPushButton()
         self.statusbar_dict['clear'].setText('清除')
         self.statusbar_dict['clear'].setToolTip('清除发送和接收计数')
-
         self.statusbar_dict['clear'].pressed.connect(
             self.statusbar_clear_pressed)
 
@@ -89,6 +88,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.tx_count = 0
 
     def checktimer(self):
+        '''
+        检测Timer是否需要开启
+        :return:
+        '''
         if self.Sendloop.isChecked():
             self.timer = QTimer(self)
             try:
@@ -105,6 +108,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
             self.timer.stop()
 
     def click_select_open(self):
+        '''
+        启动按钮功能选择
+        :return:
+        '''
         if self.prot_box.currentIndex() == 0:
             # 创建TCPServer
             self.socket_open_tcps()
@@ -120,6 +127,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.prot_box.setEnabled(0)
 
     def click_select_close(self):
+        '''
+        断开按钮功能选择
+        :return:
+        '''
         if self.Sendloop.isChecked():
             self.timer.stop()
         if self.prot_box.currentIndex() == 0:
@@ -135,6 +146,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.statusbar_dict['status'].setText('状态：关闭')
 
     def data_send_select(self):
+        '''
+        发送按钮功能选择
+        :return:
+        '''
         if self.prot_box.currentIndex() == 0:
             self.data_send_t()
         if self.prot_box.currentIndex() == 1:
@@ -143,6 +158,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
             self.data_send_u()
 
     def file_send_select(self):
+        '''
+        文件发送功能
+        :return:
+        '''
         if self.prot_box.currentIndex() == 0:
             self.file_send_t()
         if self.prot_box.currentIndex() == 1:
