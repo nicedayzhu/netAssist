@@ -9,7 +9,7 @@
 # -*- coding: utf-8 -*-
 
 import sys, tcp_Logic, udp_Logic, tcp_udp_ui
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizePolicy, QLabel, QPushButton, QFileDialog, QMessageBox
 from netAssitui import Ui_NetAssist
 import qdarkstyle
@@ -99,7 +99,7 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
                     self.timer.timeout.connect(self.data_send_select)
                 self.timer.start(self.interval)
             except Exception as ret:
-                QMessageBox.critical(self, '警告', '请输入合法的时间间隔/ms')
+                self.messagebox_info('请输入合法的时间间隔/ms')
                 self.Sendloop.setChecked(0)
         else:
             self.timer.stop()
@@ -240,6 +240,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     myWin = PyQt5_Netassist()
+    # 如下是把翻译文件切换为中文
+    translator = QtCore.QTranslator()
+    translator.load("widgets_zh_CN_all.qm")
+    app.installTranslator(translator)
     # app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     myWin.show()
     sys.exit(app.exec_())
