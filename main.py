@@ -97,8 +97,10 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
             try:
                 self.interval = int(self.loopinterval.text())
                 if self.file_load.isChecked():
+                    # 下面connect横线是pycharm的一个bug，不需理会
                     self.timer.timeout.connect(self.file_send_select)
                 else:
+                    # 下面connect横线是pycharm的一个bug，不需理会
                     self.timer.timeout.connect(self.data_send_select)
                 self.timer.start(self.interval)
             except Exception as ret:
