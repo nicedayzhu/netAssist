@@ -9,7 +9,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
 from netAssitui import Ui_NetAssist
 from time import ctime
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QCheckBox
 import binascii
 class Tcp_ucpUi(Ui_NetAssist):
     # 主线程属性继承自Ui_NetAssist
@@ -201,3 +201,40 @@ class Tcp_ucpUi(Ui_NetAssist):
             except Exception as ret:
                 # 如果出现解码错误，提示用户选中16进制显示
                 self.signal_messagebox_info.emit('解码错误，请尝试16进制显示')
+
+    def checksend_choose(self):
+        '''
+        为数据加上校验位
+        :return:
+        '''
+        if self.Sendcheck.isChecked():
+
+            # reply = QMessageBox.warning(self,'警告','这是一个警告消息对话框', QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel, QMessageBox.Save)
+            cb = QCheckBox('在数据尾部加上16进制数据0d')
+            msgBox = QMessageBox()
+            msgBox.setWindowTitle('校验位设置')
+            # msgBox.setIcon(QMessageBox.Warning)
+            msgBox.setText('这是一个添加校验位设置的对话框')
+            msgBox.setInformativeText('出现更改愿意保存吗?')
+            Save = msgBox.addButton('确定', QMessageBox.AcceptRole)
+            NoSave = msgBox.addButton('取消', QMessageBox.RejectRole)
+            # Cancel = msgBox.addButton('不保存', QMessageBox.DestructiveRole)
+            msgBox.setDefaultButton(Save)
+            msgBox.setCheckBox(cb)
+            cb.stateChanged.connect(self.checktail)
+            reply = msgBox.exec()
+            if reply == QMessageBox.AcceptRole:
+                print('你选择了保存！')
+            # elif reply == QMessageBox.DestructiveRole:
+            #     print('你选择了取消！')
+            else:
+                print('你选择了取消！')
+
+    def checktail(self):
+        # 下面的sender是上面的信号发送者cb
+        if self.sender().isChecked():
+            print('你打勾了哦')
+            return True
+        else:
+            print('怎么又不打了啊')
+            return False

@@ -11,7 +11,7 @@
 import sys, tcp_Logic, udp_Logic, tcp_udp_ui
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizePolicy, \
-    QLabel, QPushButton, QFileDialog, QMessageBox, QCheckBox
+    QLabel, QPushButton, QFileDialog, QMessageBox
 from netAssitui import Ui_NetAssist
 import qdarkstyle
 from PyQt5.QtCore import QTimer
@@ -111,40 +111,6 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
                 self.Sendloop.setChecked(0)
         else:
             self.timer.stop()
-
-    def checksend_choose(self):
-        '''
-        为数据加上校验位
-        :return:
-        '''
-        if self.sender().isChecked():
-
-            # reply = QMessageBox.warning(self,'警告','这是一个警告消息对话框', QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel, QMessageBox.Save)
-            cb = QCheckBox('在数据尾部加上16进制数据0d')
-            msgBox = QMessageBox()
-            msgBox.setWindowTitle('校验位设置')
-            # msgBox.setIcon(QMessageBox.Warning)
-            msgBox.setText('这是一个添加校验位设置的对话框')
-            msgBox.setInformativeText('出现更改愿意保存吗?')
-            Save = msgBox.addButton('保存', QMessageBox.AcceptRole)
-            NoSave = msgBox.addButton('取消', QMessageBox.RejectRole)
-            Cancel = msgBox.addButton('不保存', QMessageBox.DestructiveRole)
-            msgBox.setDefaultButton(Save)
-            msgBox.setCheckBox(cb)
-            cb.stateChanged.connect(self.check)
-            reply = msgBox.exec()
-            if reply == QMessageBox.AcceptRole:
-                print('你选择了保存！')
-            elif reply == QMessageBox.RejectRole:
-                print('你选择了取消！')
-            else:
-                print('你选择了不保存！')
-
-    def check(self):
-        if self.sender().isChecked():
-            print('你打勾了哦')
-        else:
-            print('怎么又不打了啊')
 
     def click_select_open(self):
         '''
