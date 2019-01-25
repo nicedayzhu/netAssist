@@ -238,7 +238,7 @@ class Ui_NetAssist(object):
         self.Sendloop.setText(_translate("NetAssist", "周期发送"))
         self.ms_lbl.setText(_translate("NetAssist", "ms"))
         self.Sendclear.setText(_translate("NetAssist", "发送完自动清空"))
-        self.Sendcheck.setText(_translate("NetAssist", "自动发送校验位"))
+        self.Sendcheck.setText(_translate("NetAssist", "自动发送附加位"))
         self.file_send_btn.setText(_translate("NetAssist", "发送文件"))
         self.hex_send.setText(_translate("NetAssist", "16进制发送"))
         self.clr_btn2.setText(_translate("NetAssist", "清空显示"))

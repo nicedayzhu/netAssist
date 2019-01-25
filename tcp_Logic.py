@@ -137,7 +137,7 @@ class TcpLogic(Tcp_ucpUi):
                         msg = self.hex_show(msg) # 将解码后的16进制数据按照两个字符+'空字符'发送到接收框中显示
                         if show_client_info is True:
                             # 将接收到的消息发送到接收框中进行显示，附带客户端信息
-                            connect_info = '[Remote IP %s Port: %s ]' % addr
+                            connect_info = '[Remote IP %s Port: %s ]\n' % addr
                             self.signal_add_clientstatus_info.emit(connect_info)
                             self.signal_write_msg.emit(msg)
                             # 仅在收到客户端发送的第一次消息前面加上客户端的ip，port信息
@@ -151,7 +151,7 @@ class TcpLogic(Tcp_ucpUi):
                             print(msg)
                             if show_client_info is True:
                                 # 将接收到的消息发送到接收框中进行显示，附带客户端信息
-                                connect_info = '[Remote IP %s Port: %s ]' % addr
+                                connect_info = '[Remote IP %s Port: %s ]\n' % addr
                                 self.signal_add_clientstatus_info.emit(connect_info)
                                 self.signal_write_msg.emit(msg)
                                 # 仅在收到客户端发送的第一次消息前面加上客户端的ip，port信息
@@ -280,6 +280,11 @@ class TcpLogic(Tcp_ucpUi):
             if self.link:
                 # send_msg = (str(self.DataSendtext.toPlainText())).encode('utf-8')
                 get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
+                # 判断附加为功能是否勾选
+                if self.Sendcheck.isChecked():
+                    if self.tail_ok:
+                        get_msg = get_msg + 'ok'
+                        print(get_msg)
                 # 判断是否是16进制发送
                 send_msg = self.if_hex_send(get_msg)
                 print(send_msg)

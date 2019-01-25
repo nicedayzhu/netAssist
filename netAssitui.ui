@@ -209,7 +209,7 @@
          <item row="1" column="0" colspan="3">
           <widget class="QCheckBox" name="Sendcheck">
            <property name="text">
-            <string>自动发送校验位</string>
+            <string>自动发送附加位</string>
            </property>
           </widget>
          </item>

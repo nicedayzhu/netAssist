@@ -5,11 +5,11 @@
 # @Site    : 
 # @File    : tcp_udp_ui.py
 # @Software: PyCharm
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from netAssitui import Ui_NetAssist
 from time import ctime
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QCheckBox
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QDialog, QRadioButton
 import binascii
 class Tcp_ucpUi(Ui_NetAssist):
     # 主线程属性继承自Ui_NetAssist
@@ -26,6 +26,7 @@ class Tcp_ucpUi(Ui_NetAssist):
     rx_count = 0
     tx_count = 0
     # statusbar End
+    tail_ok = False
     def __init__(self):
         super(Tcp_ucpUi, self).__init__()
 
@@ -87,14 +88,14 @@ class Tcp_ucpUi(Ui_NetAssist):
         # 为接收到的数据加上时间戳并且显示在接收框中
         if self.timestamp.isChecked():
             if self.newline.isChecked():
-                self.DataRecvtext.insertPlainText('\n[%s]' % ctime())
+                self.DataRecvtext.insertPlainText('[%s]\n' % ctime())
                 self.DataRecvtext.insertPlainText('%s' % msg)
             else:
                 self.DataRecvtext.insertPlainText('[%s]' % ctime())
                 self.DataRecvtext.insertPlainText('%s' % msg)
         else:
             if self.newline.isChecked():
-                self.DataRecvtext.insertPlainText('\n%s' % msg)
+                self.DataRecvtext.insertPlainText('%s\n' % msg)
             else:
                 self.DataRecvtext.insertPlainText('%s' % msg)
         # 滚动条移动到结尾
@@ -208,33 +209,36 @@ class Tcp_ucpUi(Ui_NetAssist):
         :return:
         '''
         if self.Sendcheck.isChecked():
+            checkDialog = QDialog()
+            checkDialog.resize(381, 200)
+            checkDialog.setMinimumSize(QtCore.QSize(381, 200))
+            checkDialog.setMaximumSize(QtCore.QSize(381, 200))
+            checkDialog.setWindowTitle('附加位设置')
+            self.buttonBox = QtWidgets.QDialogButtonBox(checkDialog)
+            self.buttonBox.setGeometry(QtCore.QRect(90, 160, 191, 28))
+            self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+            self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+            self.groupBox = QtWidgets.QGroupBox(checkDialog)
+            self.groupBox.setGeometry(QtCore.QRect(10, 10, 361, 141))
+            self.rBtn1 = QtWidgets.QRadioButton(self.groupBox)
+            self.rBtn1.setGeometry(QtCore.QRect(12, 27, 72, 19))
+            self.rBtn2 = QtWidgets.QRadioButton(self.groupBox)
+            self.rBtn2.setGeometry(QtCore.QRect(12, 53, 72, 19))
+            self.rBtn3 = QtWidgets.QRadioButton(self.groupBox)
+            self.rBtn3.setGeometry(QtCore.QRect(12, 80, 151, 19))
+            self.lineEdit = QtWidgets.QLineEdit(self.groupBox)
+            self.lineEdit.setGeometry(QtCore.QRect(170, 80, 41, 21))
+            self.groupBox.setTitle("附加位设置")
+            self.rBtn1.setText("方法一")
+            self.rBtn2.setText("方法二")
+            self.rBtn3.setText("固定位 (16进制)")
+            self.buttonBox.accepted.connect(checkDialog.accept)
+            self.buttonBox.rejected.connect(checkDialog.reject)
+            self.rBtn3.toggled.connect(self.settail)
+            checkDialog.exec_()
 
-            # reply = QMessageBox.warning(self,'警告','这是一个警告消息对话框', QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel, QMessageBox.Save)
-            cb = QCheckBox('在数据尾部加上16进制数据0d')
-            msgBox = QMessageBox()
-            msgBox.setWindowTitle('校验位设置')
-            # msgBox.setIcon(QMessageBox.Warning)
-            msgBox.setText('这是一个添加校验位设置的对话框')
-            msgBox.setInformativeText('出现更改愿意保存吗?')
-            Save = msgBox.addButton('确定', QMessageBox.AcceptRole)
-            NoSave = msgBox.addButton('取消', QMessageBox.RejectRole)
-            # Cancel = msgBox.addButton('不保存', QMessageBox.DestructiveRole)
-            msgBox.setDefaultButton(Save)
-            msgBox.setCheckBox(cb)
-            cb.stateChanged.connect(self.checktail)
-            reply = msgBox.exec()
-            if reply == QMessageBox.AcceptRole:
-                print('你选择了保存！')
-            # elif reply == QMessageBox.DestructiveRole:
-            #     print('你选择了取消！')
-            else:
-                print('你选择了取消！')
-
-    def checktail(self):
-        # 下面的sender是上面的信号发送者cb
-        if self.sender().isChecked():
-            print('你打勾了哦')
-            return True
-        else:
-            print('怎么又不打了啊')
-            return False
+    def settail(self):
+        if self.rBtn3.isChecked():
+            print('rBtn3 checked')
+            self.tail_ok = True
+            print(self.tail_ok)
