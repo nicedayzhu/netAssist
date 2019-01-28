@@ -13,7 +13,7 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizePolicy, \
     QLabel, QPushButton, QFileDialog, QMessageBox
 from netAssitui import Ui_NetAssist
-import qdarkstyle
+# import qdarkstyle
 from PyQt5.QtCore import QTimer
 
 import os
