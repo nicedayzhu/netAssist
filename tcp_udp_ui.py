@@ -9,7 +9,7 @@ from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from netAssitui import Ui_NetAssist
 from time import ctime
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QDialog, QRadioButton, QPushButton, QHBoxLayout
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QDialog
 import binascii
 class Tcp_ucpUi(Ui_NetAssist):
     # 主线程属性继承自Ui_NetAssist
@@ -251,8 +251,13 @@ class Tcp_ucpUi(Ui_NetAssist):
         “确认”按钮按下后的动作
         :return:
         '''
-        print('确定')
-        self.checkDialog.close()
+        if self.rBtn1.isChecked() or self.rBtn2.isChecked() or self.rBtn3.isChecked():
+            print('确定')
+            self.checkDialog.close()
+        else:
+            print('并未选择任何方法')
+            self.Sendcheck.setChecked(0)
+            self.checkDialog.close()
 
     def cancel(self):
         '''
