@@ -9,7 +9,7 @@ from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from netAssitui import Ui_NetAssist
 from time import ctime
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QDialog, QRadioButton
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QDialog, QRadioButton, QPushButton, QHBoxLayout
 import binascii
 class Tcp_ucpUi(Ui_NetAssist):
     # 主线程属性继承自Ui_NetAssist
@@ -205,20 +205,26 @@ class Tcp_ucpUi(Ui_NetAssist):
 
     def checksend_choose(self):
         '''
-        为数据加上校验位
+        勾选添加附加位toggle之后的动作
         :return:
         '''
         if self.Sendcheck.isChecked():
-            checkDialog = QDialog()
-            checkDialog.resize(381, 200)
-            checkDialog.setMinimumSize(QtCore.QSize(381, 200))
-            checkDialog.setMaximumSize(QtCore.QSize(381, 200))
-            checkDialog.setWindowTitle('附加位设置')
-            self.buttonBox = QtWidgets.QDialogButtonBox(checkDialog)
-            self.buttonBox.setGeometry(QtCore.QRect(90, 160, 191, 28))
-            self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-            self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
-            self.groupBox = QtWidgets.QGroupBox(checkDialog)
+            self.checkDialog = QDialog()
+            self.checkDialog.resize(381, 200)
+            self.checkDialog.setMinimumSize(QtCore.QSize(381, 200))
+            self.checkDialog.setMaximumSize(QtCore.QSize(381, 200))
+            self.checkDialog.setWindowTitle('附加位设置')
+            self.widget = QtWidgets.QWidget(self.checkDialog)
+            self.widget.setGeometry(QtCore.QRect(90, 160, 195, 30))
+            self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget)
+            self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+            self.okBtn = QtWidgets.QPushButton(self.widget)
+            self.okBtn.setText('确定')
+            self.horizontalLayout.addWidget(self.okBtn)
+            self.cancelBtn = QtWidgets.QPushButton(self.widget)
+            self.cancelBtn.setText('取消')
+            self.horizontalLayout.addWidget(self.cancelBtn)
+            self.groupBox = QtWidgets.QGroupBox(self.checkDialog)
             self.groupBox.setGeometry(QtCore.QRect(10, 10, 361, 141))
             self.rBtn1 = QtWidgets.QRadioButton(self.groupBox)
             self.rBtn1.setGeometry(QtCore.QRect(12, 27, 72, 19))
@@ -228,17 +234,91 @@ class Tcp_ucpUi(Ui_NetAssist):
             self.rBtn3.setGeometry(QtCore.QRect(12, 80, 151, 19))
             self.lineEdit = QtWidgets.QLineEdit(self.groupBox)
             self.lineEdit.setGeometry(QtCore.QRect(170, 80, 41, 21))
+            self.lineEdit.setText('0d')
             self.groupBox.setTitle("附加位设置")
             self.rBtn1.setText("方法一")
             self.rBtn2.setText("方法二")
             self.rBtn3.setText("固定位 (16进制)")
-            self.buttonBox.accepted.connect(checkDialog.accept)
-            self.buttonBox.rejected.connect(checkDialog.reject)
-            self.rBtn3.toggled.connect(self.settail)
-            checkDialog.exec_()
+            self.okBtn.clicked.connect(self.ok)
+            self.cancelBtn.clicked.connect(self.cancel)
+            self.rBtn1.toggled.connect(self.settail_1)
+            self.rBtn2.toggled.connect(self.settail_2)
+            self.rBtn3.toggled.connect(self.settail_3)
+            self.checkDialog.exec_()
 
-    def settail(self):
-        if self.rBtn3.isChecked():
-            print('rBtn3 checked')
+    def ok(self):
+        '''
+        “确认”按钮按下后的动作
+        :return:
+        '''
+        print('确定')
+        self.checkDialog.close()
+
+    def cancel(self):
+        '''
+        “取消”按钮按下后的动作
+        :return:
+        '''
+        print('取消')
+        self.Sendcheck.setChecked(0)
+        self.checkDialog.close()
+
+    def settail_1(self):
+        '''
+        勾选方法一
+        :return:
+        '''
+        if self.rBtn1.isChecked():
+            # 添加附加位标志位的RadioButton勾选状态为Tue
             self.tail_ok = True
+            # 添加附加位，当前设置为'f1'
+            self.append_tail = 'f1'
+            print('rBtn1 checked')
             print(self.tail_ok)
+
+    def settail_2(self):
+        '''
+        勾选方法二
+        :return:
+        '''
+        if self.rBtn2.isChecked():
+            # 添加附加位标志位的RadioButton勾选状态为Tue
+            self.tail_ok = True
+            # 添加附加位，当前设置为'f2'
+            self.append_tail = 'f2'
+            print('rBtn2 checked')
+            print(self.tail_ok)
+
+    def settail_3(self):
+        '''
+        勾选方法三（固定位）
+        :return:
+        '''
+        if self.rBtn3.isChecked():
+            # 添加附加位标志位的RadioButton勾选状态为Tue
+            self.tail_ok = True
+            # 添加附加位，由用户自行添加
+            self.append_tail = self.lineEdit.text()
+            print('rBtn3 checked')
+            print(self.tail_ok)
+
+    def is_sendcheck_send(self,get_msg):
+        '''
+        判断是否进行附加位发送
+        :param get_msg:
+        :return:
+        '''
+        # 判断自动发送附加位combobox是否按下
+        if self.Sendcheck.isChecked():
+            # 判断附加位设置Dialog中的RadioButton是否选中
+            if self.tail_ok:
+                get_msg_c = get_msg + self.append_tail
+                print(get_msg_c)
+                # 返回加入附加位的新内容
+                return get_msg_c
+            else:
+                # 如果RadioButton未选中，返回初始消息
+                return get_msg
+        else:
+            # 如果自动发送附加位combobox未按下，返回初始消息
+            return get_msg

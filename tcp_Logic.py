@@ -280,11 +280,8 @@ class TcpLogic(Tcp_ucpUi):
             if self.link:
                 # send_msg = (str(self.DataSendtext.toPlainText())).encode('utf-8')
                 get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
-                # 判断附加为功能是否勾选
-                if self.Sendcheck.isChecked():
-                    if self.tail_ok:
-                        get_msg = get_msg + 'ok'
-                        print(get_msg)
+                # 判断附加为功能是否勾选并进行后续处理
+                get_msg = self.is_sendcheck_send(get_msg)
                 # 判断是否是16进制发送
                 send_msg = self.if_hex_send(get_msg)
                 print(send_msg)
@@ -323,6 +320,8 @@ class TcpLogic(Tcp_ucpUi):
         else:
             if self.link:
                 get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
+                # 判断附加为功能是否勾选并进行后续处理
+                get_msg = self.is_sendcheck_send(get_msg)
                 # 判断是否是16进制发送
                 send_msg = self.if_hex_send(get_msg)
                 print(send_msg)
