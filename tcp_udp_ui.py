@@ -57,6 +57,7 @@ class Tcp_ucpUi(Ui_NetAssist):
                     self.f_data = send_f.read()
                 print(self.f_data)
             else:
+                self.file_load.setChecked(False)
                 self.statusbar.showMessage('文件载入失败', msecs=3000)
 
     def add_clientstatus_plain(self,info):

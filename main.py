@@ -9,6 +9,7 @@
 # -*- coding: utf-8 -*-
 
 import sys, tcp_Logic, udp_Logic, tcp_udp_ui
+import PyQt5.sip
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizePolicy, \
     QLabel, QPushButton, QFileDialog, QMessageBox
@@ -151,8 +152,7 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         self.statusbar_dict['status'].setText('状态：关闭')
 
     def data_send_select(self):
-        '''
-        发送按钮功能选择
+        ''' 发送按钮功能选择
         :return:
         '''
         if self.prot_box.currentIndex() == 0:
@@ -266,7 +266,7 @@ if __name__ == "__main__":
     myWin = PyQt5_Netassist()
     # 如下是把翻译文件切换为中文
     translator = QtCore.QTranslator()
-    translator.load("widgets_zh_CN_all.qm")
+    translator.load("widgets_zh_CN.qm")
     app.installTranslator(translator)
     # app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     myWin.show()
