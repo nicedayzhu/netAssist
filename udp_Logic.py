@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2019/1/11 15:48
 # @Author  : SeniorZhu1994
-# @Site    : 
+# @Site    :
 # @File    : udp_Logic.py
 # @Software: PyCharm
 from PyQt5.QtWidgets import QMessageBox
@@ -11,13 +11,14 @@ import socket
 import threading
 import stopThreading
 
+
 class UdpLogic(Tcp_ucpUi):
     def __init__(self):
         super(UdpLogic, self).__init__()
         self.us = None  # us代表udp socket
         self.us_th = None
-        self.link = False # 初始化连接状态为False
-        self.working = False # 初始化工作状态为False
+        self.link = False  # 初始化连接状态为False
+        self.working = False  # 初始化工作状态为False
 
     def socket_open_udp(self):
         """
@@ -38,8 +39,8 @@ class UdpLogic(Tcp_ucpUi):
         try:
             self.us.bind(lo_ip_port)  # 绑定地址
         except Exception as ret:
-            print('Error:',ret)
-            QMessageBox.critical(self,'错误','端口已被占用')
+            print('Error:', ret)
+            QMessageBox.critical(self, '错误', '端口已被占用')
             # 关闭udp socket
             self.socket_close_u()
         else:
@@ -62,7 +63,8 @@ class UdpLogic(Tcp_ucpUi):
                 pass
             else:
                 statusbar_client_info = '%s:%d' % (self.addr[0], self.addr[1])
-                connect_info = '[Remote IP %s Port: %s ]' % (self.addr[0], self.addr[1])
+                connect_info = '[Remote IP %s Port: %s ]' % (
+                    self.addr[0], self.addr[1])
                 print(self.addr, type(self.addr))
                 if show_client_info is True:
                     # 状态栏显示客户端连接成功信息
@@ -94,7 +96,6 @@ class UdpLogic(Tcp_ucpUi):
         except Exception as ret:
             pass
 
-
     def data_send_u(self):
         """
         用于UDP发送消息
@@ -103,15 +104,15 @@ class UdpLogic(Tcp_ucpUi):
         remote_ip = self.remoteip_text.text()
         remote_port = self.remoteport_text.text()
         try:
-            self.remote_ip_port = (remote_ip,int(remote_port))
+            self.remote_ip_port = (remote_ip, int(remote_port))
         except Exception as e:
-            QMessageBox.critical(self,'错误','请填写正确的远程主机IP和端口号')
+            QMessageBox.critical(self, '错误', '请填写正确的远程主机IP和端口号')
         else:
             if self.working is False:
                 QMessageBox.critical(self, '警告', '请先设置UDP网络')
             else:
                 if self.link:
-                    get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
+                    get_msg = self.DataSendtext.toPlainText()  # 从发送区获取数据
                     # 判断附加为功能是否勾选并进行后续处理
                     get_msg = self.is_sendcheck_send(get_msg)
                     # 判断是否是16进制发送
@@ -121,7 +122,8 @@ class UdpLogic(Tcp_ucpUi):
                         try:
                             self.us.sendto(send_msg, self.remote_ip_port)
                             self.tx_count += len(send_msg)
-                            self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
+                            self.statusbar_dict['tx'].setText(
+                                '发送计数：%s' % self.tx_count)
                         except Exception as ret:
                             pass
                     else:
@@ -137,7 +139,7 @@ class UdpLogic(Tcp_ucpUi):
         if self.working is False:
             QMessageBox.critical(self, '警告', '请先设置UDP网络')
         else:
-            if self.link :
+            if self.link:
                 if self.file_load.isChecked():
                     send_msg = self.f_data
                 else:

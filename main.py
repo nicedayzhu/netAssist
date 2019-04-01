@@ -2,13 +2,16 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2019/1/4 20:25
 # @Author  : SeniorZhu1994
-# @Site    : 
+# @Site    :
 # @File    : main.py.py
 # @Software: PyCharm
 
 # -*- coding: utf-8 -*-
 
-import sys, tcp_Logic, udp_Logic, tcp_udp_ui
+import sys
+import tcp_Logic
+import udp_Logic
+import tcp_udp_ui
 import PyQt5.sip
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizePolicy, \
@@ -18,7 +21,10 @@ from netAssitui import Ui_NetAssist
 from PyQt5.QtCore import QTimer
 
 import os
-class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_ui.Tcp_ucpUi,Ui_NetAssist):
+
+
+class PyQt5_Netassist(QMainWindow, tcp_Logic.TcpLogic,
+                      udp_Logic.UdpLogic, tcp_udp_ui.Tcp_ucpUi, Ui_NetAssist):
     def __init__(self):
         # Python3中的继承只用一个super()就可以了，继承后初始化父类的属性
         super(PyQt5_Netassist, self).__init__()
@@ -221,7 +227,7 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
         if self.recv2file.isChecked():
             '''接收转向文件'''
             file_name, ok = QFileDialog.getSaveFileName(
-                    self, u'保存文件', './', u'所有文件(*.*)')
+                self, u'保存文件', './', u'所有文件(*.*)')
             print(file_name)
             if ok:
                 self.save_file_name = file_name
@@ -260,6 +266,7 @@ class PyQt5_Netassist(QMainWindow,tcp_Logic.TcpLogic,udp_Logic.UdpLogic,tcp_udp_
             os._exit(0)
         else:
             event.ignore()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

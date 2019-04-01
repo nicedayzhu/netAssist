@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2019/1/9 12:54
 # @Author  : SeniorZhu1994
-# @Site    : 
+# @Site    :
 # @File    : tcpLogic.py
 # @Software: PyCharm
 from PyQt5.QtWidgets import QMessageBox
@@ -12,6 +12,8 @@ import threading
 import stopThreading
 import binascii
 import time
+
+
 class TcpLogic(Tcp_ucpUi):
     def __init__(self):
         super(TcpLogic, self).__init__()
@@ -20,8 +22,8 @@ class TcpLogic(Tcp_ucpUi):
         self.client_th = None
         self.accept_th = None
         self.client_socket_list = list()
-        self.link = False # 初始化连接状态为False
-        self.working = False # 初始化工作状态为False
+        self.link = False  # 初始化连接状态为False
+        self.working = False  # 初始化工作状态为False
 
     def socket_open_tcps(self):
         """
@@ -44,8 +46,8 @@ class TcpLogic(Tcp_ucpUi):
             self.s.bind(ip_port)  # 绑定地址
             self.s.listen(5)  # 监听链接
         except Exception as ret:
-            print('Error:',ret)
-            QMessageBox.critical(self,'错误','端口已被占用')
+            print('Error:', ret)
+            QMessageBox.critical(self, '错误', '端口已被占用')
             # 关闭udp socket
             self.socket_close()
         else:
@@ -67,21 +69,23 @@ class TcpLogic(Tcp_ucpUi):
                 time.sleep(0.001)
             else:
                 self.link = True  # 连接建立标志位True，为下面的data_send_t做准备
-                self.client_socket_list.append((conn,addr)) # 将连接到本服务器的客户端添加到列表中
+                self.client_socket_list.append(
+                    (conn, addr))  # 将连接到本服务器的客户端添加到列表中
                 print(self.client_socket_list)
                 # 将连接到本服务器的客户端信息显示在客户端列表下拉框中
-                statusbar_client_info = '%s:%d' % (addr[0],addr[1])
+                statusbar_client_info = '%s:%d' % (addr[0], addr[1])
                 self.clients_list.addItem(statusbar_client_info)
                 # 状态栏显示客户端连接成功信息
                 self.signal_status_connected.emit(statusbar_client_info)
                 # 为每个连接创建一个进程
-                self.s_th = threading.Thread(target=self.tcp_server_concurrency,args=(conn,addr))
+                self.s_th = threading.Thread(
+                    target=self.tcp_server_concurrency, args=(
+                        conn, addr))
                 # 设置线程为守护线程，防止退出主线程时，子线程仍在运行
                 self.s_th.setDaemon(True)
                 self.s_th.start()
 
-
-    def tcp_server_concurrency(self,conn,addr):
+    def tcp_server_concurrency(self, conn, addr):
         """
         功能函数，为每个tcp连接创建一个线程；
         使用子线程用于创建连接，使每个tcp client可以单独地与server通信
@@ -104,7 +108,7 @@ class TcpLogic(Tcp_ucpUi):
                     单机 “断开” 按钮第二次，才会真正断开服务器的socket
                     （总结成一句话，写成Expection会导致点两次 “断开” 才能关闭服务器）
                 """
-                print('Error:',con_rest)
+                print('Error:', con_rest)
                 conn.close()
                 print(self.client_socket_list)
                 # 将当前客户端的连接从socket列表中删除
@@ -117,7 +121,8 @@ class TcpLogic(Tcp_ucpUi):
                     self.link = False
 
                 # 将已断开连接的客户端信息从客户端列表下拉box中删除
-                self.comboBox_removeItem_byName(self.clients_list,statusbar_client_info)
+                self.comboBox_removeItem_byName(
+                    self.clients_list, statusbar_client_info)
                 # 状态栏显示客户端断开信息
                 self.signal_status_removed.emit(statusbar_client_info)
                 """
@@ -132,13 +137,16 @@ class TcpLogic(Tcp_ucpUi):
                     # 16进制显示功能检测
                     if self.hex_recv.isChecked():
                         msg = binascii.b2a_hex(recv_msg).decode('utf-8')
-                        # 例子：str(binascii.b2a_hex(b'\x01\x0212'))[2:-1] == > 01023132
-                        print(msg, type(msg),len(msg)) # msg为 str 类型
-                        msg = self.hex_show(msg) # 将解码后的16进制数据按照两个字符+'空字符'发送到接收框中显示
+                        # 例子：str(binascii.b2a_hex(b'\x01\x0212'))[2:-1] == >
+                        # 01023132
+                        print(msg, type(msg), len(msg))  # msg为 str 类型
+                        # 将解码后的16进制数据按照两个字符+'空字符'发送到接收框中显示
+                        msg = self.hex_show(msg)
                         if show_client_info is True:
                             # 将接收到的消息发送到接收框中进行显示，附带客户端信息
                             connect_info = '[Remote IP %s Port: %s ]\n' % addr
-                            self.signal_add_clientstatus_info.emit(connect_info)
+                            self.signal_add_clientstatus_info.emit(
+                                connect_info)
                             self.signal_write_msg.emit(msg)
                             # 仅在收到客户端发送的第一次消息前面加上客户端的ip，port信息
                             show_client_info = False
@@ -152,7 +160,8 @@ class TcpLogic(Tcp_ucpUi):
                             if show_client_info is True:
                                 # 将接收到的消息发送到接收框中进行显示，附带客户端信息
                                 connect_info = '[Remote IP %s Port: %s ]\n' % addr
-                                self.signal_add_clientstatus_info.emit(connect_info)
+                                self.signal_add_clientstatus_info.emit(
+                                    connect_info)
                                 self.signal_write_msg.emit(msg)
                                 # 仅在收到客户端发送的第一次消息前面加上客户端的ip，port信息
                                 show_client_info = False
@@ -164,15 +173,17 @@ class TcpLogic(Tcp_ucpUi):
 
                     # 将接收到的数据字节数显示在状态栏的计数区域
                     self.rx_count += len(recv_msg)
-                    self.statusbar_dict['rx'].setText('接收计数：%s' % self.rx_count)
+                    self.statusbar_dict['rx'].setText(
+                        '接收计数：%s' % self.rx_count)
 
                 else:
                     # 当前客户端连接主动关闭，但服务器socket并不关闭
                     conn.close()
                     # 将当前客户端的连接从列表中删除
-                    self.client_socket_list.remove((conn,addr))
+                    self.client_socket_list.remove((conn, addr))
                     # 将已断开连接的客户端信息从客户端列表下拉box中删除
-                    self.comboBox_removeItem_byName(self.clients_list, statusbar_client_info)
+                    self.comboBox_removeItem_byName(
+                        self.clients_list, statusbar_client_info)
                     # 状态栏显示客户端断开信息
                     self.signal_status_removed.emit(statusbar_client_info)
 
@@ -191,13 +202,14 @@ class TcpLogic(Tcp_ucpUi):
         try:
             self.s.connect(ip_port)
         except Exception as ret:
-            print("Error:",ret)
-            QMessageBox.critical(self,'错误',str(ret))
+            print("Error:", ret)
+            QMessageBox.critical(self, '错误', str(ret))
             self.socket_close()
         else:
             self.working = True
-            self.link = True # 设置连接状态标志位 True
-            self.client_th = threading.Thread(target=self.tcp_client_concurrency)
+            self.link = True  # 设置连接状态标志位 True
+            self.client_th = threading.Thread(
+                target=self.tcp_client_concurrency)
             # 设置线程为守护线程，防止退出主线程时，子线程仍在运行
             self.client_th.setDaemon(True)
             self.client_th.start()
@@ -274,12 +286,12 @@ class TcpLogic(Tcp_ucpUi):
         :return: None
         """
 
-        if self.working is False :
+        if self.working is False:
             QMessageBox.critical(self, '警告', '请先设置TCP网络')
         else:
             if self.link:
                 # send_msg = (str(self.DataSendtext.toPlainText())).encode('utf-8')
-                get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
+                get_msg = self.DataSendtext.toPlainText()  # 从发送区获取数据
                 # 判断附加为功能是否勾选并进行后续处理
                 get_msg = self.is_sendcheck_send(get_msg)
                 # 判断是否是16进制发送
@@ -295,11 +307,13 @@ class TcpLogic(Tcp_ucpUi):
                         else:
                             # 服务器向选中的特定客户端发送消息
                             for client, address in self.client_socket_list:
-                                address_info = '%s:%d' % (address[0], address[1])
+                                address_info = '%s:%d' % (
+                                    address[0], address[1])
                                 if self.clients_list.currentText() == address_info:
                                     client.sendall(send_msg)
                         self.tx_count += len(send_msg)
-                        self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
+                        self.statusbar_dict['tx'].setText(
+                            '发送计数：%s' % self.tx_count)
                     except Exception as e_crst:
                         # QMessageBox.critical(self, '错误', '当前没有任何连接')
                         pass
@@ -308,7 +322,6 @@ class TcpLogic(Tcp_ucpUi):
 
             else:
                 QMessageBox.critical(self, '警告', '当前无任何连接')
-
 
     def data_send_t_c(self):
         """
@@ -319,7 +332,7 @@ class TcpLogic(Tcp_ucpUi):
             QMessageBox.critical(self, '警告', '请先设置TCP网络')
         else:
             if self.link:
-                get_msg = self.DataSendtext.toPlainText() # 从发送区获取数据
+                get_msg = self.DataSendtext.toPlainText()  # 从发送区获取数据
                 # 判断附加为功能是否勾选并进行后续处理
                 get_msg = self.is_sendcheck_send(get_msg)
                 # 判断是否是16进制发送
@@ -329,7 +342,8 @@ class TcpLogic(Tcp_ucpUi):
                     try:
                         self.s.send(send_msg)
                         self.tx_count += len(send_msg)
-                        self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
+                        self.statusbar_dict['tx'].setText(
+                            '发送计数：%s' % self.tx_count)
                     except Exception as ret:
                         pass
                 else:
@@ -346,12 +360,12 @@ class TcpLogic(Tcp_ucpUi):
         if self.working is False:
             QMessageBox.critical(self, '警告', '请先设置TCP网络')
         else:
-            if self.link :
+            if self.link:
                 if self.file_load.isChecked():
                     send_msg = self.f_data
                 else:
                     send_msg = b''
-                print(send_msg,len(send_msg))
+                print(send_msg, len(send_msg))
                 # 判断发送是否为空
                 if send_msg != b'':
                     try:
@@ -362,11 +376,13 @@ class TcpLogic(Tcp_ucpUi):
                         else:
                             # 服务器向选中的特定客户端发送消息
                             for client, address in self.client_socket_list:
-                                address_info = '%s:%d' % (address[0], address[1])
+                                address_info = '%s:%d' % (
+                                    address[0], address[1])
                                 if self.clients_list.currentText() == address_info:
                                     client.sendall(send_msg)
                         self.tx_count += len(send_msg)
-                        self.statusbar_dict['tx'].setText('发送计数：%s' % self.tx_count)
+                        self.statusbar_dict['tx'].setText(
+                            '发送计数：%s' % self.tx_count)
                     except Exception as e_crst:
                         # QMessageBox.critical(self, '错误', '当前没有任何连接')
                         pass
@@ -389,7 +405,7 @@ class TcpLogic(Tcp_ucpUi):
                     send_msg = self.f_data
                 else:
                     send_msg = b''
-                print(send_msg,len(send_msg))
+                print(send_msg, len(send_msg))
                 if send_msg != b'':
                     self.s.send(send_msg)
                 else:

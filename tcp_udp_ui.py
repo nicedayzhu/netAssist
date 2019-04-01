@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2019/1/10 16:00
 # @Author  : SeniorZhu1994
-# @Site    : 
+# @Site    :
 # @File    : tcp_udp_ui.py
 # @Software: PyCharm
 from PyQt5 import QtGui, QtCore, QtWidgets
@@ -11,6 +11,8 @@ from netAssitui import Ui_NetAssist
 from time import ctime
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QDialog
 import binascii
+
+
 class Tcp_ucpUi(Ui_NetAssist):
     # 主线程属性继承自Ui_NetAssist
     # 信号槽机制：设置一个信号，用于触发接收区写入动作
@@ -27,6 +29,7 @@ class Tcp_ucpUi(Ui_NetAssist):
     tx_count = 0
     # statusbar End
     tail_ok = False
+
     def __init__(self):
         super(Tcp_ucpUi, self).__init__()
 
@@ -50,17 +53,17 @@ class Tcp_ucpUi(Ui_NetAssist):
         if self.file_load.isChecked():
             # 载入发送文件
             send_file_name, sf_ok = QFileDialog.getOpenFileName(
-                    self, u'保存文件', './', u'所有文件(*.*)')
+                self, u'保存文件', './', u'所有文件(*.*)')
             if sf_ok:
                 self.statusbar.showMessage('文件载入成功', msecs=3000)
-                with open(send_file_name,'rb') as send_f:
+                with open(send_file_name, 'rb') as send_f:
                     self.f_data = send_f.read()
                 print(self.f_data)
             else:
                 self.file_load.setChecked(False)
                 self.statusbar.showMessage('文件载入失败', msecs=3000)
 
-    def add_clientstatus_plain(self,info):
+    def add_clientstatus_plain(self, info):
         # signal_add_clientstatus_info信号会触发本函数
         """
         向接收框发送客户端连接信息
@@ -69,14 +72,14 @@ class Tcp_ucpUi(Ui_NetAssist):
         """
         self.DataRecvtext.insertPlainText(info)
 
-    def messagebox_info(self,info):
+    def messagebox_info(self, info):
         # signal_messagebox_info信号会触发本函数
         """
         弹出消息框
         :param info:
         :return:
         """
-        QMessageBox.critical(self,'错误',info)
+        QMessageBox.critical(self, '错误', info)
 
     def write_msg(self, msg):
         # signal_write_msg信号会触发这个函数
@@ -109,15 +112,19 @@ class Tcp_ucpUi(Ui_NetAssist):
                 # 找到对应的项目
                 combo.removeItem(i)
 
-    def statusbar_connect(self,statusbar_client_info):
+    def statusbar_connect(self, statusbar_client_info):
         # signal_messagebox_info信号会触发本函数
-        self.statusbar.showMessage('客户端：%s 成功连接！' % statusbar_client_info, msecs=2000)
+        self.statusbar.showMessage(
+            '客户端：%s 成功连接！' %
+            statusbar_client_info, msecs=2000)
 
-    def statusbar_remove(self,statusbar_client_info):
+    def statusbar_remove(self, statusbar_client_info):
         # signal_status_removed信号会触发本函数
-        self.statusbar.showMessage('客户端：%s 断开连接！' % statusbar_client_info, msecs=2000)
+        self.statusbar.showMessage(
+            '客户端：%s 断开连接！' %
+            statusbar_client_info, msecs=2000)
 
-    def str_to_hex(self,s):
+    def str_to_hex(self, s):
         """
         字符串转16进制显示
         :param s:
@@ -125,7 +132,7 @@ class Tcp_ucpUi(Ui_NetAssist):
         """
         return ' '.join([hex(ord(c)).replace('0x', '') for c in s])
 
-    def hex_to_str(self,s):
+    def hex_to_str(self, s):
         """
         16进制转字符串显示
         :param s:
@@ -133,7 +140,7 @@ class Tcp_ucpUi(Ui_NetAssist):
         """
         return ''.join([chr(i) for i in [int(b, 16) for b in s.split(' ')]])
 
-    def str_to_bin(self,s):
+    def str_to_bin(self, s):
         """
         字符串转二进制显示
         :param s:
@@ -141,7 +148,7 @@ class Tcp_ucpUi(Ui_NetAssist):
         """
         return ' '.join([bin(ord(c)).replace('0b', '') for c in s])
 
-    def bin_to_str(self,s):
+    def bin_to_str(self, s):
         """
         二进制转字符串显示
         :param s:
@@ -149,7 +156,7 @@ class Tcp_ucpUi(Ui_NetAssist):
         """
         return ''.join([chr(i) for i in [int(b, 2) for b in s.split(' ')]])
 
-    def hex_show(self,str):
+    def hex_show(self, str):
         """
         将字符串转换为大写字母并每隔2个字符用空格分割处理后得到一个新字符串
         如：faa5fbb5fcc5fdd5010200000028000001900000000a002d00000000017d7840000003e800005fa55fb55fc55fd5
@@ -158,10 +165,10 @@ class Tcp_ucpUi(Ui_NetAssist):
         :return:
         """
         t = str.upper()
-        return ' '.join([t[2*i:2*(i+1)] for i in range(len(t)//2)])
+        return ' '.join([t[2 * i:2 * (i + 1)] for i in range(len(t) // 2)])
         # / 是精确除法， // 是向下取整除法， % 是求模
 
-    def if_hex_send(self,pre_msg):
+    def if_hex_send(self, pre_msg):
         """
         判断是否以16进制发送并处理
         :param pre_msg:
@@ -183,7 +190,7 @@ class Tcp_ucpUi(Ui_NetAssist):
         except Exception as e:
             QMessageBox.critical(self, '错误', '%s' % e)
 
-    def if_hex_show_tcpc_udp(self,pre_msg):
+    def if_hex_show_tcpc_udp(self, pre_msg):
         """
         判断是否以16进制显示并处理
         :param pre_msg:
@@ -308,7 +315,7 @@ class Tcp_ucpUi(Ui_NetAssist):
             print('rBtn3 checked')
             print(self.tail_ok)
 
-    def is_sendcheck_send(self,get_msg):
+    def is_sendcheck_send(self, get_msg):
         '''
         判断是否进行附加位发送
         :param get_msg:
