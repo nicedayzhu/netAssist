@@ -17,6 +17,7 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizePolicy, \
     QLabel, QPushButton, QFileDialog, QMessageBox
 from netAssitui import Ui_NetAssist
+# from QCandyUi import CandyWindow
 # import qdarkstyle
 from PyQt5.QtCore import QTimer
 
@@ -271,6 +272,8 @@ class PyQt5_Netassist(QMainWindow, tcp_Logic.TcpLogic,
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     myWin = PyQt5_Netassist()
+    # 添加界面美化QCandyUI
+    # myWin = CandyWindow.createWindow(myWin, 'blueGreen')
     # 如下是把翻译文件切换为中文
     translator = QtCore.QTranslator()
     translator.load("widgets_zh_CN.qm")
