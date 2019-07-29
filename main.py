@@ -39,6 +39,7 @@ class PyQt5_Netassist(QMainWindow, tcp_Logic.TcpLogic,
         self.init()
         self.custom_connect()
         self.init_statusbar()
+        self.open_btn.setToolTip("打开连接")
 
     def init(self):
         # 打印选择的协议类型编号
@@ -190,6 +191,13 @@ class PyQt5_Netassist(QMainWindow, tcp_Logic.TcpLogic,
             self.localport_lb.setText('3.本地端口号')
             self.open_btn.setText('开始监听')
             self.clients_lbl.setText('客户端:')
+            # 在tcp下不显示udp下的远程ip，远程端口标签
+            self.clients_list.show()
+            self.clients_lbl.show()
+            self.remoteip_lbl.hide()
+            self.remoteip_text.hide()
+            self.remoteport_text.hide()
+            self.remoteport_lbl.hide()
         if imf_s == 1:
             self.localip_lb.setText('2.远程ip地址')
             self.localport_lb.setText('3.远程端口号')
@@ -258,7 +266,7 @@ class PyQt5_Netassist(QMainWindow, tcp_Logic.TcpLogic,
         :return:
         """
         reply = QtWidgets.QMessageBox.question(self,
-                                               '本程序',
+                                               'NetAssist',
                                                "是否要退出程序？",
                                                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                                                QtWidgets.QMessageBox.No)
@@ -279,5 +287,10 @@ if __name__ == "__main__":
     translator.load("widgets_zh_CN.qm")
     app.installTranslator(translator)
     # app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+    qss = """
+            QPushButton#open_btn:pressed {background-color: blue}
+    
+          """
+    myWin.setStyleSheet(qss)
     myWin.show()
     sys.exit(app.exec_())
