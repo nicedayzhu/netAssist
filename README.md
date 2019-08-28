@@ -31,3 +31,5 @@
 - 美化界面
 - 完成发送校验位功能
 
+## 关于TCP建立通信过程中界面卡住的问题
+我的CSDN:https://blog.csdn.net/wbdxz/article/details/86290139
