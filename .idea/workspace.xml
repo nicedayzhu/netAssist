@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8b504aec-adf6-4c9d-a9f1-38c267b6036c" name="Default" comment="界面显示bug修复，美化&#10;1.修复选择协议后，界面显示不符合当前协议特性&#10;2.将退出提示对话框标题改为“NetAssist”&#10;3.按钮美化">
+    <list default="true" id="8b504aec-adf6-4c9d-a9f1-38c267b6036c" name="Default" comment="TCPClientw针对服务器主动断开的异常处理">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tcp_Logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/tcp_Logic.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -158,7 +159,14 @@
       <option name="project" value="LOCAL" />
       <updated>1564410165503</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="TCPClientw针对服务器主动断开的异常处理">
+      <created>1575707290611</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1575707290611</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -187,6 +195,23 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value=".idea" />
     <MESSAGE value="界面显示bug修复，美化&#10;1.修复选择协议后，界面显示不符合当前协议特性&#10;2.将退出提示对话框标题改为“NetAssist”&#10;3.按钮美化" />
-    <option name="LAST_COMMIT_MESSAGE" value="界面显示bug修复，美化&#10;1.修复选择协议后，界面显示不符合当前协议特性&#10;2.将退出提示对话框标题改为“NetAssist”&#10;3.按钮美化" />
+    <MESSAGE value="TCPClientw针对服务器主动断开的异常处理" />
+    <option name="LAST_COMMIT_MESSAGE" value="TCPClientw针对服务器主动断开的异常处理" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tcp_Logic.py</url>
+          <line>251</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tcp_Logic.py</url>
+          <line>50</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

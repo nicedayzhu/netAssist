@@ -126,6 +126,7 @@ class PyQt5_Netassist(QMainWindow, tcp_Logic.TcpLogic,
         启动按钮功能选择
         :return:
         '''
+        self.prot_box.setEnabled(0)
         if self.prot_box.currentIndex() == 0:
             # 创建TCPServer
             self.socket_open_tcps()
@@ -138,7 +139,6 @@ class PyQt5_Netassist(QMainWindow, tcp_Logic.TcpLogic,
             self.socket_open_udp()
         if self.working is True:
             self.statusbar_dict['status'].setText('状态：打开')
-        self.prot_box.setEnabled(0)
 
     def click_select_close(self):
         '''

@@ -47,9 +47,10 @@ class TcpLogic(Tcp_ucpUi):
             self.s.listen(5)  # 监听链接
         except Exception as ret:
             print('Error:', ret)
-            QMessageBox.critical(self, '错误', '端口已被占用')
-            # 关闭udp socket
+            # 关闭tcp socket
             self.socket_close()
+            QMessageBox.critical(self, '错误', '端口已被占用')
+
         else:
             print('server listening...')
             self.accept_th = threading.Thread(target=self.accept_concurrency)
@@ -229,7 +230,10 @@ class TcpLogic(Tcp_ucpUi):
                 recv_msg = self.s.recv(1024)
             except Exception as ret:
                 print("Error:", ret)
+                # 这里不能用QMessageBox，会导致崩溃
+                # QMessageBox.critical(self, '错误', str(ret))
                 self.socket_close()
+
             else:
                 if recv_msg:
                     # 判断是否以16进制显示并处理
@@ -252,6 +256,7 @@ class TcpLogic(Tcp_ucpUi):
         """
         self.clients_list.clear()
         # 当软件工作在TCPServer模式下
+        self.prot_box.setEnabled(1) #使通信协议下拉框重新可选
         if self.prot_box.currentIndex() == 0:
             try:
                 for client, address in self.client_socket_list:
