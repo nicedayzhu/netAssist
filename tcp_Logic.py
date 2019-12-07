@@ -213,7 +213,7 @@ class TcpLogic(Tcp_ucpUi):
             # 设置线程为守护线程，防止退出主线程时，子线程仍在运行
             self.client_th.setDaemon(True)
             self.client_th.start()
-            connect_info = '已连接到服务器IP: %s 端口: %s' % ip_port
+            connect_info = "已连接到服务器IP: %s 端口: %s\n" % ip_port
             self.signal_add_clientstatus_info.emit(connect_info)
 
     def tcp_client_concurrency(self):
@@ -222,20 +222,28 @@ class TcpLogic(Tcp_ucpUi):
         :return:
         """
         while True:
-            recv_msg = self.s.recv(1024)
-            if recv_msg:
-                # 判断是否以16进制显示并处理
-                self.if_hex_show_tcpc_udp(recv_msg)
-                # 将接收到的数据字节数显示在状态栏的计数区域
-                self.rx_count += len(recv_msg)
-                self.statusbar_dict['rx'].setText('接收计数：%s' % self.rx_count)
-            else:
-                self.s.close()
-                msg = '连接已断开\n'
-                self.signal_write_msg.emit(msg)
-                self.working = False
+            try:
+                """
+                    针对服务器主动断开的异常处理
+                """
+                recv_msg = self.s.recv(1024)
+            except Exception as ret:
+                print("Error:", ret)
                 self.socket_close()
-                break
+            else:
+                if recv_msg:
+                    # 判断是否以16进制显示并处理
+                    self.if_hex_show_tcpc_udp(recv_msg)
+                    # 将接收到的数据字节数显示在状态栏的计数区域
+                    self.rx_count += len(recv_msg)
+                    self.statusbar_dict['rx'].setText('接收计数：%s' % self.rx_count)
+                else:
+                    self.s.close()
+                    msg = '连接已断开\n'
+                    self.signal_write_msg.emit(msg)
+                    self.working = False
+                    self.socket_close()
+                    break
 
     def socket_close(self):
         """
